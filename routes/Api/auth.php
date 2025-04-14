@@ -21,5 +21,8 @@ Route::prefix('auth')->middleware(['throttle:10,1'])->group(function () {
         });
 
     Route::post('/socialite-login', [SocialiteController::class, 'socialiteLogin']);
+    // Route::get('/login/callback', [SocialiteController::class, 'socialiteCallback']);
+
+
 });
 //~ Auth Routes End

@@ -68,7 +68,6 @@ class ChoosePlanController extends Controller
             'title' => 'required|string',
             'description' => 'required|string',
             'price' => 'required|string',
-            'button_link' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -79,7 +78,6 @@ class ChoosePlanController extends Controller
         $choosePlan->title = $request->title;
         $choosePlan->price = $request->price;
         $choosePlan->description = $request->description;
-        $choosePlan->button_link = $request->button_link;
         $choosePlan->save();
 
 

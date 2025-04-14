@@ -38,7 +38,6 @@
                                     <th class="column-content">Title</th>
                                     <th class="column-content">Description</th>
                                     <th class="column-content">Price</th>
-                                    <th class="column-content">Button Link</th>
                                     <th class="column-status">Status</th>
                                     <th class="column-action">Action</th>
                                 </tr>
@@ -119,12 +118,6 @@
                         {
                             data: 'price',
                             name: 'price',
-                            orderable: true,
-                            searchable: true
-                        },
-                        {
-                            data: 'button_link',
-                            name: 'button_link',
                             orderable: true,
                             searchable: true
                         },

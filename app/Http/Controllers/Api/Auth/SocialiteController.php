@@ -29,6 +29,8 @@ class SocialiteController extends Controller {
             'provider' => 'required|string|in:google,facebook,apple',
         ]);
 
+        dd($request->all());
+
         try {
             $token    = $request->input('token');
             $provider = $request->input('provider');
