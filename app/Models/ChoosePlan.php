@@ -14,7 +14,10 @@ class ChoosePlan extends Model
         'title',
         'description',
         'price',
-        'button_link',
+        'billing_cycle',
+        'touchpoint_limit',
+        'has_ads',
+        'status',
         
     ];
 
@@ -24,7 +27,9 @@ class ChoosePlan extends Model
         'title' => 'string',
         'description' => 'string',
         'price' => 'string',
-        'button_link' => 'string',
+        'billing_cycle' => 'string',
+        'touchpoint_limit' => 'integer',
+        'has_ads' => 'boolean',
         'deleted_at' => 'datetime',
         'status' => 'string',
         'created_at' => 'datetime',

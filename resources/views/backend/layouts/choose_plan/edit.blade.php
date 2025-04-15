@@ -27,10 +27,10 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{route('choose.plan.store')}}" method="POST" enctype="multipart/form-data">
+                        <form action="{{route('choose.plan.update', $choosePlan->id)}}" method="POST" enctype="multipart/form-data">
                             @csrf
+                            @method('PUT')
                             <div class="row gy-2">
-
                                 <div class="container">
                                     <div class="row">
                                         <div class="col-md-6">
@@ -53,22 +53,57 @@
                                             @enderror
                                     </div>
                                 </div>
-
+                                </div>
 
                                 <div class="container">
                                     <div class="row mt-3">
-                                        <!-- First Column: Description -->
+                                         {{-- Billing Cycle --}}
                                         <div class="col-md-6">
-                                            <label for="description" class="form-label">Description:</label>
-                                            <textarea class="form-control description @error('description') is-invalid @enderror"
-                                                id="description" name="description" placeholder="Please Enter Description">{{ old('description',$choosePlan->description) }}</textarea>
-                                            @error('description')
+                                           <label for="billing">Billing Cycle</label>
+                                            <select class="form-select @error('billing_cycle') is-invalid @enderror"
+                                                id="billing_cycle" name="billing_cycle">
+                                                <option value="">Select Billing Cycle</option>
+                                                <option value="free" {{ old('billing_cycle',$choosePlan->billing_cycle) == 'free' ? 'selected' : '' }}>free</option>
+                                                <option value="monthly" {{ old('billing_cycle',$choosePlan->billing_cycle) == 'monthly' ? 'selected' : '' }}>Monthly</option>
+                                                <option value="yearly" {{ old('billing_cycle',$choosePlan->billing_cycle) == 'yearly' ? 'selected' : '' }}>Yearly</option>
+                                                <option value="lifetime" {{ old('billing_cycle',$choosePlan->billing_cycle) == 'lifetime' ? 'selected' : '' }}>Lifetime</option>
+                                            </select>
+                                            @error('billing_cycle')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
 
-                                        {{-- button link --}}
+                                        {{-- Touchpoint Limit --}}
 
+                                        <div class="col-md-6">
+                                            <label for="touchpoint_limit">Touchpoint Limit</label>
+                                            <input type="number" class="form-control @error('touchpoint_limit') is-invalid @enderror"
+                                                id="touchpoint_limit" name="touchpoint_limit" placeholder="Please Enter Touchpoint Limit"
+                                                value="{{ old('touchpoint_limit',$choosePlan->touchpoint_limit) }}">
+                                            @error('touchpoint_limit')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="container">
+                                    <div class="row mt-3">
+                                     {{-- has add edit --}}
+                                        <div class="col-md-12">
+
+                                            <label for="has_ads">Has Ads</label>
+                                            <select class="form-select @error('has_ads') is-invalid @enderror"
+                                                id="has_ads" name="has_ads">
+                                                <option value="">Select Has Ads</option>
+                                                <option value="1" {{ old('has_ads',$choosePlan->has_ads) == '1' ? 'selected' : '' }}>Yes</option>
+                                                <option value="0" {{ old('has_ads',$choosePlan->has_ads) == '0' ? 'selected' : '' }}>No</option>
+                                            </select>
+
+                                        </div>
                                 </div>
 
 

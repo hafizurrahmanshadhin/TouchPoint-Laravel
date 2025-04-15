@@ -54,8 +54,8 @@ class ChoosePlanController extends Controller
      */
     public function create()
     {
-        $choosePlan = new ChoosePlan();
-        return view('backend.layouts.choose_plan.create', compact('choosePlan'));
+        $choosePlans = ChoosePlan::all(); // Make sure this is used
+        return view('backend.layouts.choose_plan.create', compact('choosePlans'));
     }
 
     /**
@@ -66,20 +66,41 @@ class ChoosePlanController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
-            'description' => 'required|string',
-            'price' => 'required|string',
-        ]);
+            'price' => 'required|numeric',
+            'billing_cycle' => 'required|string',
+            'touchpoint_limit' => 'required|integer',
+            // 'has_ads' => 'boolean',
 
+
+        ]);
+        // dd($request->all());
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $choosePlan = new ChoosePlan();
-        $choosePlan->title = $request->title;
-        $choosePlan->price = $request->price;
-        $choosePlan->description = $request->description;
-        $choosePlan->save();
+        // $choosePlan = new ChoosePlan();
+        // $choosePlan->title = $request->title;
+        // $choosePlan->price = $request->price;
+        // $choosePlan->description = $request->description;
+        // $choosePlan->billing_cycle = $request->billing_cycle;
+        // $choosePlan->touchpoint_limit = $request->touchpoint_limit;
+        // $choosePlan->save();
 
+        $plan = new ChoosePlan();
+        $plan->title = $request->title;
+        $plan->price = $request->price;
+        $plan->billing_cycle = $request->billing_cycle;
+        $plan->touchpoint_limit = $request->touchpoint_limit;
+
+
+        // Logic for showing ads
+        if ($plan->billing_cycle === 'free' && $plan->touchpoint_limit == 15) {
+            $plan->has_ads = true;
+        } else {
+            $plan->has_ads = false;
+        }
+
+        $plan->save();
 
         return redirect()->route('choose.plan.index')->with('success', 'Choose Plan created successfully.');
     }
@@ -87,10 +108,7 @@ class ChoosePlanController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ChoosePlan $choosePlan)
-    {
-        // return view('backend.layouts.choose_plan.show', compact('choosePlan'));
-    }
+    public function show(ChoosePlan $choosePlan, $id) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -106,9 +124,24 @@ class ChoosePlanController extends Controller
      */
     public function update(Request $request, ChoosePlan $choosePlan)
     {
-        //
-    }
+        $validated = $request->validate([
+            'title' => 'required|string',
+            'price' => 'required|numeric',
+            'billing_cycle' => 'required|string',
+            'touchpoint_limit' => 'required|integer',
+        ]);
 
+        // Logic for showing ads
+        if ($validated['billing_cycle'] === 'free' && ($validated['touchpoint_limit'] <=  15)) {
+            $validated['has_ads'] = true;
+        } else {
+            $validated['has_ads'] = false;
+        }
+
+        $choosePlan->update($validated);
+        return redirect()->route('choose.plan.index')->with('success', 'Choose Plan updated successfully.');
+    }
+ 
     /**
      * Remove the specified resource from storage.
      */

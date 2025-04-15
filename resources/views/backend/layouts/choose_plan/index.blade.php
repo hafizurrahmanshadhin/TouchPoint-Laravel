@@ -36,8 +36,10 @@
                                 <tr>
                                     <th class="column-id">#</th>
                                     <th class="column-content">Title</th>
-                                    <th class="column-content">Description</th>
                                     <th class="column-content">Price</th>
+                                    <th class="column-content">Billing Cycle</th>
+                                    <th class="column-content">Touchpoint Limit</th>
+                                    <th class="column-content">Has Ads</th>
                                     <th class="column-status">Status</th>
                                     <th class="column-action">Action</th>
                                 </tr>
@@ -110,16 +112,29 @@
                             searchable: true
                         },
                         {
-                            data: 'description',
-                            name: 'description',
-                            orderable: true,
-                            searchable: true
-                        },
-                        {
                             data: 'price',
                             name: 'price',
                             orderable: true,
                             searchable: true
+                        },
+                        {
+                            data: 'billing_cycle',
+                            name: 'billing_cycle',
+                            orderable: true,
+                            searchable: true
+                        },
+                        {
+                            data: 'touchpoint_limit',
+                            name: 'touchpoint_limit',
+                            orderable: true,
+                            searchable: true
+                        },
+                        {
+                            data: 'has_ads',
+                            name: 'has_ads',
+                            orderable: true,
+                            searchable: true,
+                            className: 'text-center'
                         },
                         {
                             data: 'status',
