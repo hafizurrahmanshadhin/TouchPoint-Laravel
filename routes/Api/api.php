@@ -13,8 +13,11 @@ Route::get('/test', function () {
 Route::get('/choose-plan/list', [ChoosePlanController::class, 'index'])
     ->name('api.choose-plan.index');
 
-Route::get('/choose-plan/{id}', [ChoosePlanController::class, 'show'])
+Route::get('/choose-plan/details/{id}', [ChoosePlanController::class, 'show'])
     ->name('api.choose-plan.show');
+
+// Route::get('/chose-plan/details/{id}', [ChoosePlanController::class, 'details'])
+//     ->name('api.choose-plan.details');
 // Route::get('/choose-plan/{id}/services', [ChoosePlanController::class, 'services'])
 //     ->name('api.choose-plan.services');
 // Route::get('/choose-plan/{id}/categories', [ChoosePlanController::class, 'categories'])
