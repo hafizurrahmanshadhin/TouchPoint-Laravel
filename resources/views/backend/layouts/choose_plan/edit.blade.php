@@ -69,15 +69,6 @@
 
                                         {{-- button link --}}
 
-                                           <div class="col-md-6">
-                                                <label for="button_link" class="form-label">Button Link:</label>
-                                                <input type="text" class="form-control @error('button_link') is-invalid @enderror"
-                                                    id="button_link" name="button_link" placeholder="Please Enter Button Link"
-                                                    value="{{ old('button_link',$choosePlan->button_link) }}">
-                                                @error('button_link')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror                             
-                                    </div>
                                 </div>
 
 

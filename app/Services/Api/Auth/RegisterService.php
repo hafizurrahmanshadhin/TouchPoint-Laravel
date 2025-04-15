@@ -21,7 +21,6 @@ class RegisterService {
             $user = User::create([
                 'name'         => $data['name'],
                 'email'        => $data['email'],
-                'country'      => $data['country'],
                 'password'   => bcrypt($data['password']),
             ]);
         } catch (Exception $e) {

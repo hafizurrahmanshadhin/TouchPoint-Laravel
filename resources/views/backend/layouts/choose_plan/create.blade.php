@@ -58,7 +58,7 @@
                                 <div class="container">
                                     <div class="row mt-3">
                                         <!-- First Column: Description -->
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <label for="description" class="form-label">Description:</label>
                                             <textarea class="form-control description @error('description') is-invalid @enderror"
                                                 id="description" name="description" placeholder="Please Enter Description">{{ old('description') }}</textarea>
@@ -68,16 +68,6 @@
                                         </div>
 
                                         {{-- button link --}}
-
-                                           <div class="col-md-6">
-                                                <label for="button_link" class="form-label">Button Link:</label>
-                                                <input type="text" class="form-control @error('button_link') is-invalid @enderror"
-                                                    id="button_link" name="button_link" placeholder="Please Enter Button Link"
-                                                    value="{{ old('button_link') }}">
-                                                @error('button_link')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror                             
-                                    </div>
                                 </div>
 
 

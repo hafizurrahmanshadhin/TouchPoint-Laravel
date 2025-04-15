@@ -24,7 +24,7 @@ class LoginService {
             $user = auth()->user();
 
             return [
-                'user'  => $user,
+                'user'  => $user,  
                 'token' => $token,
             ];
         } catch (Exception $e) {

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('title');
             $table->string('description');
             $table->float('price', 2);
-            $table->string('button_link');
 
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamp('created_at')->useCurrent();

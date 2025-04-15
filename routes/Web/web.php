@@ -9,3 +9,7 @@ Route::get('/reset', [ResetController::class, 'RunMigrations'])->name('reset');
 
 //! Route for Landing Page
 Route::get('/', [HomeController::class, 'index'])->name('index');
+
+
+// Route::get('/auth/redirect/google', [SocialiteController::class, 'redirectToGoogle']);
+// Route::get('/auth/callback/google', [SocialiteController::class, 'handleGoogleCallback']);

@@ -14,7 +14,7 @@
         "laravel/framework": "^11.31",
         "laravel/reverb": "^1.0",
         "laravel/sanctum": "^4.0",
-        "laravel/socialite": "^5.16",
+        "laravel/socialite": "^5.19",
         "laravel/tinker": "^2.9",
         "stripe/stripe-php": "^16.4",
         "twilio/sdk": "^8.3",
