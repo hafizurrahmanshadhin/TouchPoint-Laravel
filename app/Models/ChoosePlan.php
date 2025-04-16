@@ -11,11 +11,12 @@ class ChoosePlan extends Model
 
     use HasFactory, SoftDeletes;
     protected $fillable = [
-        'title',
+        'plan',
         'description',
         'price',
         'billing_cycle',
         'touchpoint_limit',
+        'icon',
         'has_ads',
         'status',
         
@@ -30,6 +31,7 @@ class ChoosePlan extends Model
         'billing_cycle' => 'string',
         'touchpoint_limit' => 'integer',
         'has_ads' => 'boolean',
+        'icon' => 'boolean',
         'deleted_at' => 'datetime',
         'status' => 'string',
         'created_at' => 'datetime',

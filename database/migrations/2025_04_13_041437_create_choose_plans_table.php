@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('choose_plans', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->enum('plan', ['free', 'monthly', 'yearly', 'lifetime']);
             $table->decimal('price', 8, 2);   
             $table->boolean('has_ads')->default(true);
-            $table->enum('billing_cycle', ['free', 'monthly', 'yearly', 'lifetime']);
-            $table->integer('touchpoint_limit')->nullable();
+            $table->enum('billing_cycle', ['monthly', 'yearly', 'lifetime']);
+            $table->string('touchpoint_limit')->nullable();
+            $table->boolean('icon')->default(false);
 
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamp('created_at')->useCurrent();

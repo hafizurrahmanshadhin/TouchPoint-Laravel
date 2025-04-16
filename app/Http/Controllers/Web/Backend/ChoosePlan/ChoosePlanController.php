@@ -61,48 +61,60 @@ class ChoosePlanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    // public function store(Request $request)
+    // {
+
     public function store(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string',
-            'price' => 'required|numeric',
+            'plan' => 'required|in:free,monthly,yearly,lifetime',
+            'price' => 'required|numeric|min:0',
             'billing_cycle' => 'required|string',
-            'touchpoint_limit' => 'required|integer',
-            // 'has_ads' => 'boolean',
-
-
+            'touchpoint_limit' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if ($value !== 'unlimited' && (!is_numeric($value) || $value < 0)) {
+                        $fail('The ' . str_replace('_', ' ', $attribute) . ' must be a non-negative number or "unlimited".');
+                    }
+                },
+            ],
+            'has_ads' => 'required|boolean',
+            // no need to validate 'icon' from request — it will be auto-handled
         ]);
-        // dd($request->all());
+
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // $choosePlan = new ChoosePlan();
-        // $choosePlan->title = $request->title;
-        // $choosePlan->price = $request->price;
-        // $choosePlan->description = $request->description;
-        // $choosePlan->billing_cycle = $request->billing_cycle;
-        // $choosePlan->touchpoint_limit = $request->touchpoint_limit;
-        // $choosePlan->save();
+        $validated = $validator->validated();
 
-        $plan = new ChoosePlan();
-        $plan->title = $request->title;
-        $plan->price = $request->price;
-        $plan->billing_cycle = $request->billing_cycle;
-        $plan->touchpoint_limit = $request->touchpoint_limit;
-
-
-        // Logic for showing ads
-        if ($plan->billing_cycle === 'free' && $plan->touchpoint_limit == 15) {
-            $plan->has_ads = true;
-        } else {
-            $plan->has_ads = false;
+        if (ChoosePlan::where('plan', $validated['plan'])->exists()) {
+            return redirect()->back()
+                ->withErrors(['plan' => 'This plan has already been added.'])
+                ->withInput();
         }
 
+        //  Business logic
+        if ($validated['plan'] === 'free') {
+            $validated['price'] = 0.00;
+            $validated['touchpoint_limit'] <= 15;
+            $validated['icon'] = true;
+        } else {
+            $validated['touchpoint_limit'] = 'unlimited';
+            $validated['icon'] = false;
+        }
+
+        $plan = new ChoosePlan();
+        $plan->plan = $validated['plan'];
+        $plan->price = $validated['price'];
+        $plan->billing_cycle = $validated['billing_cycle'];
+        $plan->touchpoint_limit = $validated['touchpoint_limit'];
+        $plan->has_ads = $validated['has_ads'];
+        $plan->icon = $validated['icon'];
         $plan->save();
 
-        return redirect()->route('choose.plan.index')->with('success', 'Choose Plan created successfully.');
+        return redirect()->route('choose.plan.index')
+            ->with('success', 'Choose Plan created successfully.');
     }
 
     /**
@@ -122,26 +134,60 @@ class ChoosePlanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ChoosePlan $choosePlan)
+
+    public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'title' => 'required|string',
-            'price' => 'required|numeric',
+        $validator = Validator::make($request->all(), [
+            'plan' => 'required|in:free,monthly,yearly,lifetime',
+            'price' => 'required|numeric|min:0',
             'billing_cycle' => 'required|string',
-            'touchpoint_limit' => 'required|integer',
+            'touchpoint_limit' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if ($value !== 'unlimited' && (!is_numeric($value) || $value < 0)) {
+                        $fail('The ' . str_replace('_', ' ', $attribute) . ' must be a non-negative number or "unlimited".');
+                    }
+                },
+            ],
+            'has_ads' => 'required|boolean',
         ]);
-
-        // Logic for showing ads
-        if ($validated['billing_cycle'] === 'free' && ($validated['touchpoint_limit'] <=  15)) {
-            $validated['has_ads'] = true;
-        } else {
-            $validated['has_ads'] = false;
+    
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
-
-        $choosePlan->update($validated);
+    
+        $validated = $validator->validated();
+    
+        // Check for duplicate plan name (but allow same ID)
+        $existing = ChoosePlan::where('plan', $validated['plan'])->where('id', '!=', $id)->first();
+        if ($existing) {
+            return redirect()->back()->withErrors(['plan' => 'This plan has already been added.'])->withInput();
+        }
+    
+        $plan = ChoosePlan::findOrFail($id);
+    
+        if ($validated['plan'] === 'free') {
+            $validated['price'] = 0.00;            // Free plan always 0
+            $validated['icon'] = true;             // Free plan has icon true
+            // Touchpoint_limit comes from user input
+        } else {
+            $validated['icon'] = false;
+            // If not free plan, usually touchpoint is unlimited, but keep user input
+        }
+    
+        $plan->plan = $validated['plan'];
+        $plan->price = $validated['price'];
+        $plan->billing_cycle = $validated['billing_cycle'];
+        $plan->touchpoint_limit = $validated['touchpoint_limit']; // always from user input
+        $plan->has_ads = $validated['has_ads'];
+        $plan->icon = $validated['icon'];
+    
+        $plan->save();
+    
         return redirect()->route('choose.plan.index')->with('success', 'Choose Plan updated successfully.');
     }
- 
+
+
     /**
      * Remove the specified resource from storage.
      */
@@ -157,17 +203,6 @@ class ChoosePlanController extends Controller
         }
     }
 
-    // Change status
-    // public function status(Request $request, $id)
-    // {
-    //     $choosePlan = ChoosePlan::find($id);
-    //     if ($choosePlan) {
-    //         $choosePlan->status = $request->status == 'active' ? 'inactive' : 'active';
-    //         $choosePlan->save();
-    //         return response()->json(['t-success' => true, 'message' => 'Status updated successfully.']);
-    //     }
-    //     return response()->json(['t-success' => false, 'message' => 'Choose Plan not found.']);
-    // }
 
     // Change status
 

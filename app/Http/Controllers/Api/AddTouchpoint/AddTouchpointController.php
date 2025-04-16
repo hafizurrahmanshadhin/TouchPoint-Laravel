@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\AddTouchpoint;
+use App\Http\Controllers\Controller;
+
 
 use App\Models\AddTouchpoint;
 use Illuminate\Http\Request;

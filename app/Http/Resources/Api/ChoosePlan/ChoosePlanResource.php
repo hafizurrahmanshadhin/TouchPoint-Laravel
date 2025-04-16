@@ -24,8 +24,11 @@ class ChoosePlanResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'description' => $this->description,
             'price' => $this->price,
+            'billing_cycle' => $this->billing_cycle,
+            'touchpoint_limit' => $this->touchpoint_limit,
+            'has_ads' => $this->has_ads,
+
         ];
     } 
     

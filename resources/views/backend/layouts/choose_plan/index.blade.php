@@ -35,7 +35,7 @@
                             <thead>
                                 <tr>
                                     <th class="column-id">#</th>
-                                    <th class="column-content">Title</th>
+                                    <th class="column-content">Plan</th>
                                     <th class="column-content">Price</th>
                                     <th class="column-content">Billing Cycle</th>
                                     <th class="column-content">Touchpoint Limit</th>
@@ -106,8 +106,8 @@
                             className: 'text-center'
                         },
                         {
-                            data: 'title',
-                            name: 'title',
+                            data: 'plan',
+                            name: 'plan',
                             orderable: true,
                             searchable: true
                         },
