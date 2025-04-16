@@ -18,18 +18,16 @@ class ChoosePlan extends Model
         'touchpoint_limit',
         'icon',
         'has_ads',
-        'status',
-        
+        'status'
     ];
 
     protected $casts = [
-
         'id' => 'integer',
         'title' => 'string',
         'description' => 'string',
         'price' => 'string',
         'billing_cycle' => 'string',
-        'touchpoint_limit' => 'integer',
+        'touchpoint_limit' => 'string',
         'has_ads' => 'boolean',
         'icon' => 'boolean',
         'deleted_at' => 'datetime',

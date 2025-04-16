@@ -78,7 +78,7 @@
                                                 name="price"
                                                 placeholder="Please Enter Price"
                                                 value="{{ old('price', $choosePlan->price) }}">
-                                            <input type="hidden" name="price" id="hidden_price" value="{{ old('price', $choosePlan->price) }}">
+                                            {{-- <input type="hidden" name="price" id="hidden_price" value="{{ old('price', $choosePlan->price) }}"> --}}
                                             
                                             @error('price')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -108,18 +108,26 @@
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
-                        
+
                                         <div class="col-md-6">
-                                            <label for="touchpoint_limit" class="form-label">Touchpoint Limit:</label>
-                                            <input type="text"
-                                                class="form-control @error('touchpoint_limit') is-invalid @enderror"
-                                                id="touchpoint_limit" name="touchpoint_limit"
-                                                placeholder="Enter Touchpoint Limit"
-                                                value="{{ old('touchpoint_limit', $choosePlan->touchpoint_limit) }}">
-                                            @error('touchpoint_limit')
+                                            <label for="currency" class="form-label">Touchpoint Limit:</label>
+                                                          
+                                            <select id="touchpoint_type" class="form-select mb-2" name="touchpoint_type" onchange="toggleTouchpointLimit()">
+                                                <option value="unlimited" {{ $choosePlan->touchpoint_limit === 'unlimited' ? 'selected' : '' }}>Unlimited</option>
+                                                <option value="custom" {{ is_numeric($choosePlan->touchpoint_limit) ? 'selected' : '' }}>Custom</option>
+                                            </select>
+                                            
+                                            <input type="number" 
+                                                   class="form-control @error('touchpoint_limit') is-invalid @enderror"
+                                                   id="touchpoint_limit_input" 
+                                                   name="touchpoint_limit"
+                                                   placeholder="Enter touchpoint limit"
+                                                   value="{{ is_numeric($choosePlan->touchpoint_limit) ? $choosePlan->touchpoint_limit : '' }}"
+                                                   {{ $choosePlan->touchpoint_limit === 'unlimited' ? 'style=display:none' : '' }}>
+                                            @error('touchpoint_limit_input')
                                                 <span class="text-danger">{{ $message }}</span>
                                             @enderror
-                                        </div>
+
                                     </div>
                                 </div>
                         
@@ -152,44 +160,28 @@
 @endsection
 
 @push('scripts')
+
+
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const planSelect = document.getElementById('plan');
-        const priceInput = document.getElementById('price');
-        const hiddenPriceInput = document.getElementById('hidden_price');
-        const touchpointInput = document.getElementById('touchpoint_limit');
+    // Toggle the visibility of the custom input based on the selected value
+    function toggleTouchpointLimit() {
+        const touchpointTypeSelect = document.getElementById('touchpoint_type');
+        const touchpointInput = document.getElementById('touchpoint_limit_input');
+        const hiddenTouchpointInput = document.getElementById('touchpoint_limit_hidden');
 
-        function toggleFields(plan) {
-            if (plan === 'free') {
-                priceInput.value = '0.00';
-                hiddenPriceInput.value = '0.00';
-                priceInput.setAttribute('disabled', 'disabled');
-
-                if (!touchpointInput.value || touchpointInput.value === 'unlimited') {
-                    touchpointInput.value = '{{ old('touchpoint_limit', $plan->touchpoint_limit ?? '15') }}';
-                }
-            } else {
-                priceInput.removeAttribute('disabled');
-                priceInput.value = '{{ old('price', $plan->price ?? '') }}';
-                hiddenPriceInput.value = priceInput.value;
-
-                if (!touchpointInput.value || touchpointInput.value === '15') {
-                    touchpointInput.value = '{{ old('touchpoint_limit', $plan->touchpoint_limit ?? 'unlimited') }}';
-                }
-            }
+        if (touchpointTypeSelect.value === 'unlimited') {
+            touchpointInput.style.display = 'none';  
+            hiddenTouchpointInput.value = 'unlimited';  
+        } else {
+            touchpointInput.style.display = 'block';
+            hiddenTouchpointInput.value = touchpointInput.value;  
         }
+    }
 
-        toggleFields(planSelect.value); // on page load
-
-        planSelect.addEventListener('change', function () {
-            toggleFields(this.value);
-        });
-
-        // keep hidden price synced
-        priceInput.addEventListener('input', function () {
-            hiddenPriceInput.value = this.value;
-        });
-    });
+    // Call the function to initialize the field state when the page loads
+    window.onload = toggleTouchpointLimit;
 </script>
+
+
 
 @endpush

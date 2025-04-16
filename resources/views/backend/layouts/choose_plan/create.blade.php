@@ -35,59 +35,53 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <label for="plan" class="form-label">Plan:</label>
-                                                <select
-                                                class="form-control @error('plan') is-invalid @enderror"
-                                                id="plan"
-                                                name="plan">
-                                                <option value="">-- Select Plan --</option>
-                                            
-                                                <option value="free" 
-                                                    {{ old('plan') == 'free' ? 'selected' : '' }}
-                                                    {{ in_array('free', $usedPlans ?? []) ? 'disabled style=opacity:0.5;' : '' }}>
-                                                    Free
-                                                </option>
-                                            
-                                                <option value="monthly" 
-                                                    {{ old('plan') == 'monthly' ? 'selected' : '' }}
-                                                    {{ in_array('monthly', $usedPlans ?? []) ? 'disabled style=opacity:0.5;' : '' }}>
-                                                    Monthly
-                                                </option>
-                                            
-                                                <option value="yearly" 
-                                                    {{ old('plan') == 'yearly' ? 'selected' : '' }}
-                                                    {{ in_array('yearly', $usedPlans ?? []) ? 'disabled style=opacity:0.5;' : '' }}>
-                                                    Yearly
-                                                </option>
-                                            
-                                                <option value="lifetime" 
-                                                    {{ old('plan') == 'lifetime' ? 'selected' : '' }}
-                                                    {{ in_array('lifetime', $usedPlans ?? []) ? 'disabled style=opacity:0.5;' : '' }}>
-                                                    Lifetime
-                                                </option>
-                                            </select>
-                                            
+                                                <select class="form-control @error('plan') is-invalid @enderror"
+                                                    id="plan" name="plan">
+                                                    <option value="">-- Select Plan --</option>
+
+                                                    <option value="free" {{ old('plan') == 'free' ? 'selected' : '' }}
+                                                        {{ in_array('free', $usedPlans ?? []) ? 'disabled style=opacity:0.5;' : '' }}>
+                                                        Free
+                                                    </option>
+
+                                                    <option value="monthly" {{ old('plan') == 'monthly' ? 'selected' : '' }}
+                                                        {{ in_array('monthly', $usedPlans ?? []) ? 'disabled style=opacity:0.5;' : '' }}>
+                                                        Monthly
+                                                    </option>
+
+                                                    <option value="yearly" {{ old('plan') == 'yearly' ? 'selected' : '' }}
+                                                        {{ in_array('yearly', $usedPlans ?? []) ? 'disabled style=opacity:0.5;' : '' }}>
+                                                        Yearly
+                                                    </option>
+
+                                                    <option value="lifetime"
+                                                        {{ old('plan') == 'lifetime' ? 'selected' : '' }}
+                                                        {{ in_array('lifetime', $usedPlans ?? []) ? 'disabled style=opacity:0.5;' : '' }}>
+                                                        Lifetime
+                                                    </option>
+                                                </select>
+
                                                 @error('plan')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="price" class="form-label">Price:</label>
-                                            
+
                                                 {{-- Visible field (can be disabled) --}}
                                                 <input type="number"
-                                                    class="form-control @error('price') is-invalid @enderror"
-                                                    id="price"
-                                                    placeholder="Please Enter Price"
-                                                    value="{{ old('price') }}">
-                                                
+                                                    class="form-control @error('price') is-invalid @enderror" id="price"
+                                                    placeholder="Please Enter Price" value="{{ old('price') }}">
+
                                                 {{-- Hidden field that always submits --}}
-                                                <input type="hidden" name="price" id="hidden_price" value="{{ old('price') }}">
-                                            
+                                                <input type="hidden" name="price" id="hidden_price"
+                                                    value="{{ old('price') }}">
+
                                                 @error('price')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-                                            
+
                                         </div>
                                     </div>
 
@@ -113,7 +107,7 @@
                                                 @enderror
                                             </div>
 
-                                            <div class="col-md-6">
+                                            {{-- <div class="col-md-6">
                                                 <label for="touchpoint_limit" class="form-label">Touchpoint Limit:</label>
                                                 <input type="text"
                                                     class="form-control @error('touchpoint_limit') is-invalid @enderror"
@@ -123,7 +117,33 @@
                                                 @error('touchpoint_limit')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
+                                            </div> --}}
+
+                                            <div class="col-md-6">
+                                                <label for="touchpoint_type" class="form-label">Touchpoint Limit:</label>
+                                            
+                                                <!-- Dropdown for selecting unlimited or custom -->
+                                                <select id="touchpoint_type" class="form-select mb-2" name="touchpoint_type" onchange="toggleTouchpointLimit()">
+                                                    <option value="unlimited" {{ old('touchpoint_limit') === 'unlimited' ? 'selected' : '' }}>Unlimited</option>
+                                                    <option value="custom" {{ is_numeric(old('touchpoint_limit')) ? 'selected' : '' }}>Custom</option>
+                                                </select>
+                                            
+                                                <!-- Custom value input (displayed only when "Custom" is selected) -->
+                                                <input type="number"
+                                                    class="form-control @error('touchpoint_limit') is-invalid @enderror"
+                                                    id="touchpoint_limit_input" name="touchpoint_limit"
+                                                    placeholder="Enter touchpoint limit"
+                                                    value="{{ old('touchpoint_limit') }}"
+                                                    {{ old('touchpoint_limit') === 'unlimited' ? 'style=display:none' : '' }}>
+                                            
+                                                <!-- Hidden input to ensure touchpoint_limit is sent with the form -->
+                                                <input type="hidden" name="touchpoint_limit_hidden" id="touchpoint_limit_hidden" value="{{ old('touchpoint_limit', 'unlimited') }}">
+                                            
+                                                @error('touchpoint_limit')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
                                             </div>
+
                                         </div>
 
                                     </div>
@@ -159,17 +179,16 @@
 @endsection
 
 @push('scripts')
-
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const planSelect = document.getElementById('plan');
             const priceInput = document.getElementById('price');
             const hiddenPriceInput = document.getElementById('hidden_price');
             const touchpointInput = document.getElementById('touchpoint_limit');
-    
-            planSelect.addEventListener('change', function () {
+
+            planSelect.addEventListener('change', function() {
                 const selectedPlan = this.value;
-    
+
                 if (selectedPlan === 'free') {
                     priceInput.value = '0.00';
                     hiddenPriceInput.value = '0.00';
@@ -187,13 +206,32 @@
                     touchpointInput.value = '';
                 }
             });
-    
+
             // Keep hidden input in sync with price field
-            priceInput.addEventListener('input', function () {
+            priceInput.addEventListener('input', function() {
                 hiddenPriceInput.value = this.value;
             });
         });
     </script>
-    
-    
+
+
+<script>
+    // Toggle the visibility of the custom input based on the selected value
+    function toggleTouchpointLimit() {
+        const touchpointTypeSelect = document.getElementById('touchpoint_type');
+        const touchpointInput = document.getElementById('touchpoint_limit_input');
+        const hiddenTouchpointInput = document.getElementById('touchpoint_limit_hidden');
+
+        if (touchpointTypeSelect.value === 'unlimited') {
+            touchpointInput.style.display = 'none';  // Hide the input field
+            hiddenTouchpointInput.value = 'unlimited';  // Ensure "unlimited" is set in the hidden field
+        } else {
+            touchpointInput.style.display = 'block';  // Show the input field
+            hiddenTouchpointInput.value = touchpointInput.value;  // Pass the custom value if set
+        }
+    }
+
+    // Call the function to initialize the field state when the page loads
+    window.onload = toggleTouchpointLimit;
+</script>
 @endpush
