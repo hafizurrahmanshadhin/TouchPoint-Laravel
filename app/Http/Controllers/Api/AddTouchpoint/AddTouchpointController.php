@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\Api\AddTouchpoint;
-use App\Http\Controllers\Controller;
+use App\Helpers\Helper;
 
-
-use App\Models\AddTouchpoint;
 use Illuminate\Http\Request;
+use App\Models\AddTouchpoint;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\AddTouchpoint\AddTouchpointResource;
 
 class AddTouchpointController extends Controller
 {
@@ -30,7 +31,35 @@ class AddTouchpointController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'contact_id' => 'required|exists:contacts,id',
+            'contact_type' => 'required|in:personal,business',
+            'contact_method' => 'required|in:call,text,meetup',
+            'start_date' => 'required|date',
+            'start_time' => 'required|date_format:H:i',
+            'cadence' => 'required|in:daily,weekly,monthly,custom',
+            'notes' => 'nullable|string'
+        ]);
+
+        $addTouchpoint = AddTouchpoint::create($request->all());
+
+        if (!$addTouchpoint) {
+
+            return Helper::jsonResponse(
+                false,
+                'Add Touchpoint creation failed',
+                500,
+                []
+            );
+        }
+        return Helper::jsonResponse(
+            true,
+            'Add Touchpoint created successfully',
+            201,
+            new AddTouchpointResource($addTouchpoint)
+        );
+
+
     }
 
     /**

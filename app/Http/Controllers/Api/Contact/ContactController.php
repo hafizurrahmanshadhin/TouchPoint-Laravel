@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api\Contact;
+
 use Google\Rpc\Help;
 
 use App\Helpers\Helper;
@@ -14,9 +15,30 @@ class ContactController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+
+        $numberOfContacts = request()->input('details');
+
+        $contacts = Contact::where('status', 'active')
+        ->latest()
+        ->take($numberOfContacts)
+        ->get();
+
+        if ($contacts->isEmpty()) {
+            return Helper::jsonResponse(
+                false,
+                'No contacts found',
+                404,
+                []
+            );
+        }
+        return Helper::jsonResponse(
+            true,
+            'Contacts fetched successfully',
+            200,
+            ContactResource::collection($contacts)
+        );
     }
 
     /**
@@ -60,10 +82,29 @@ class ContactController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Contact $contact)
+    public function show(Contact $contact,$id)
     {
-        
-        
+
+        $contact = Contact::where('id', $id)
+            ->orWhere('phone', $id)
+            ->orWhere('name', $id)
+            ->first();
+
+        if (!$contact) {
+            return Helper::jsonResponse(
+                false,
+                'Contact not found',
+                404,
+                []
+            );
+        }
+
+        return Helper::jsonResponse(
+            true,
+            'Contact fetched successfully',
+            200,
+            new ContactResource($contact)
+        );
     }
 
     /**

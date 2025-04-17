@@ -19,13 +19,14 @@ class AddTouchpoint extends Model
         'cadence',
         'notes',
         'contact_id',
+
     ];
     protected $casts = [
         'id' => 'integer',
         'contact_type' => 'string',
         'contact_method' => 'string',
         'start_date' => 'date',
-        'start_time' => 'time',
+        'start_time' => 'string',
         'cadence' => 'string',
         'notes' => 'string',
         'contact_id' => 'integer',
