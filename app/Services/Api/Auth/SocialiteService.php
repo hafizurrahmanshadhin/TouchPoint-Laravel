@@ -34,7 +34,6 @@ class SocialiteService {
                 'name'                 => $socialUser->getName() ?? $socialUser->getNickname() ?? 'Unknown',
                 'password'             => Hash::make(Str::random(16)),
                 'email_verified_at'    => now(),
-                'terms_and_conditions' => true,
             ]
         );
 

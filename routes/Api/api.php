@@ -36,8 +36,6 @@ Route::get('/add-touchpoint/list', [AddTouchpointController::class, 'index'])
 Route::get('/add-touchpoint/details/{id}', [AddTouchpointController::class, 'show'])
     ->name('api.add-touchpoint.show');
 
-
-
 // Subscription API route
 Route::resource('/subscription', SubscriptionController::class)
     ->names('api.subscription');
