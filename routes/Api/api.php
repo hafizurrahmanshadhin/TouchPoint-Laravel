@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\ServicesController;
 use App\Http\Controllers\Api\CategoriesController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Api\ChoosePlan\ChoosePlanController;
+use App\Http\Controllers\Api\Subscription\SubscriptionController;
 use App\Http\Controllers\Api\AddTouchpoint\AddTouchpointController;
 
 Route::get('/test', function () {
@@ -20,12 +21,12 @@ Route::get('/choose-plan/details/{id}', [ChoosePlanController::class, 'show'])
 // Contact API route
 Route::resource('/contact', ContactController::class)
     ->names('api.contact');
-    
 Route::get('/contact/list', [ContactController::class, 'index'])
     ->name('api.contact.index');
-
 Route::get('/contact/details/{id}', [ContactController::class, 'show'])
     ->name('api.contact.show');
+Route::delete('/contact/delete/{id}', [ContactController::class, 'destroy'])
+    ->name('api.contact.destroy');
 
 // Add Touchpoint API route
 Route::resource('/add-touchpoint', AddTouchpointController::class)
@@ -34,4 +35,11 @@ Route::get('/add-touchpoint/list', [AddTouchpointController::class, 'index'])
     ->name('api.add-touchpoint.index');
 Route::get('/add-touchpoint/details/{id}', [AddTouchpointController::class, 'show'])
     ->name('api.add-touchpoint.show');
+
+
+
+// Subscription API route
+Route::resource('/subscription', SubscriptionController::class)
+    ->names('api.subscription');
+    Route::get('/subscription/list', [SubscriptionController::class, 'show'])->name('api.subscription.show');
     

@@ -59,7 +59,6 @@ class AddTouchpointController extends Controller
             new AddTouchpointResource($addTouchpoint)
         );
 
-
     }
 
     /**
@@ -91,6 +90,5 @@ class AddTouchpointController extends Controller
      */
     public function destroy(AddTouchpoint $addTouchpoint)
     {
-        //
     }
 }

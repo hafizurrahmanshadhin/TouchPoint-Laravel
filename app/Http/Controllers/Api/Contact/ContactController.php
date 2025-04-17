@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Api\Contact;
 
-use Google\Rpc\Help;
+use Exception;
 
+use Google\Rpc\Help;
 use App\Helpers\Helper;
 use App\Models\Contact;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Contact\ContactResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ContactController extends Controller
 {
@@ -126,8 +128,38 @@ class ContactController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Contact $contact)
-    {
-        //
+    public function destroy(Contact $contact,$id)
+    {   
+        // deleted for pasafic data
+
+        try {
+            $contact = Contact::findOrFail($id);
+    
+            $contact->delete();
+    
+            return Helper::jsonResponse(
+                true,
+                'Contact deleted successfully',
+                200,
+                []
+            );
+        } catch (ModelNotFoundException $e) {
+            return Helper::jsonResponse(
+                false,
+                'Contact not found',
+                404,
+                []
+            );
+        } catch (Exception $e) {
+            return Helper::jsonResponse(
+                false,
+                'Something went wrong while deleting the contact',
+                500,
+                ['error' => $e->getMessage()]
+            );
+        }
+
+
+        
     }
 }
