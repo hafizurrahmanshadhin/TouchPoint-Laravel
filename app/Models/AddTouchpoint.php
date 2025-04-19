@@ -19,6 +19,7 @@ class AddTouchpoint extends Model
         'cadence',
         'notes',
         'contact_id',
+        'status'
 
     ];
     protected $casts = [
@@ -33,6 +34,7 @@ class AddTouchpoint extends Model
         'deleted_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'status' => 'string'
     ];
 
 

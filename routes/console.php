@@ -11,3 +11,14 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 
+//~ registering make interface class command
+Artisan::command('make:interface {name}', function ($name) {
+    $this->call(MakeInterface::class, ['name' => $name]);
+});
+
+Artisan::command('make:interface {name}', function ($name) {
+    $this->call(MakeInterface::class, ['name' => $name]);
+});
+
+Artisan::call('app:send-event-reminders');
+return response()->json(['message' => 'Event reminders sent successfully.']);

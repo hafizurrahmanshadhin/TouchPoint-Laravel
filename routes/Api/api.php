@@ -1,12 +1,15 @@
 <?php
 
+use App\Models\AddTouchpoint;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\DeviceToken\DeviceTokenController;
 use App\Http\Controllers\Api\ServicesController;
 use App\Http\Controllers\Api\CategoriesController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Api\ChoosePlan\ChoosePlanController;
 use App\Http\Controllers\Api\Subscription\SubscriptionController;
 use App\Http\Controllers\Api\AddTouchpoint\AddTouchpointController;
+use Twilio\TwiML\Video\Room;
 
 Route::get('/test', function () {
     return response()->json(['message' => 'Hello World']);
@@ -21,23 +24,36 @@ Route::get('/choose-plan/details/{id}', [ChoosePlanController::class, 'show'])
 // Contact API route
 Route::resource('/contact', ContactController::class)
     ->names('api.contact');
-Route::get('/contact/list', [ContactController::class, 'index'])
-    ->name('api.contact.index');
+// Route::get('/contact/list', [ContactController::class, 'index'])
+//     ->name('api.contact.index');
 Route::get('/contact/details/{id}', [ContactController::class, 'show'])
     ->name('api.contact.show');
+
 Route::delete('/contact/delete/{id}', [ContactController::class, 'destroy'])
     ->name('api.contact.destroy');
 
 // Add Touchpoint API route
-Route::resource('/add-touchpoint', AddTouchpointController::class)
-    ->names('api.add-touchpoint');
+// Route::resource('/add-touchpoint', AddTouchpointController::class)
+//     ->names('api.add-touchpoint');
+
 Route::get('/add-touchpoint/list', [AddTouchpointController::class, 'index'])
     ->name('api.add-touchpoint.index');
+
 Route::get('/add-touchpoint/details/{id}', [AddTouchpointController::class, 'show'])
     ->name('api.add-touchpoint.show');
+
+Route::post('/add-touchpoint/edit/{id}', [AddTouchpointController::class,'update']);
+
+Route::delete('/add-touchpoint/delete/{id}',[AddTouchpointController::class,'destroy']);
 
 // Subscription API route
 Route::resource('/subscription', SubscriptionController::class)
     ->names('api.subscription');
     Route::get('/subscription/list', [SubscriptionController::class, 'show'])->name('api.subscription.show');
+
+
+// Register api token
+
+Route::post('/device-tokens', [DeviceTokenController::class, 'store']);
+Route::post('/send-event-reminders', [EventReminderController::class, 'sendReminders']);
     

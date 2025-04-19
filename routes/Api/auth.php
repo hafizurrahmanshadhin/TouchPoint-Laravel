@@ -20,11 +20,11 @@ Route::prefix('auth')->middleware(['throttle:10,1'])->group(function () {
             Route::post('/reset-password', 'resetPassword');
         });
 
-    // Route::post('/socialite-login', [SocialiteController::class, 'socialiteLogin']);
+    Route::post('/socialite-login', [SocialiteController::class, 'socialiteLogin']);
  
     // Route::get('/login/callback', [SocialiteController::class, 'socialiteCallback']);
 
-    Route::post('/socialLogin', [SocialiteController::class, 'SocialLogin']);
+    // Route::post('/socialLogin', [SocialiteController::class, 'SocialLogin']);
 
     Route::middleware('auth:api')->group(function () {
         Route::post('/logout', [SocialiteController::class, 'logout']);

@@ -20,41 +20,41 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class SocialiteController extends Controller {
 
-    // protected SocialiteService $socialiteService;
-    // private Helper $helper;
+    protected SocialiteService $socialiteService;
+    private Helper $helper;
 
-    // public function __construct(SocialiteService $socialiteService, Helper $helper) {
-    //     $this->socialiteService = $socialiteService;
-    //     $this->helper           = $helper;
-    // }
+    public function __construct(SocialiteService $socialiteService, Helper $helper) {
+        $this->socialiteService = $socialiteService;
+        $this->helper           = $helper;
+    }
 
-    // /**
-    //  * Handle socialite login.
-    //  */
-    // public function socialiteLogin(Request $request): JsonResponse {
-    //     $request->validate([
-    //         'token'    => 'required|string',
-    //         'provider' => 'required|string|in:google,facebook,apple',
-    //     ]);
+    /**
+     * Handle socialite login.
+     */
+    public function socialiteLogin(Request $request): JsonResponse {
+        $request->validate([
+            'token'    => 'required|string',
+            'provider' => 'required|string|in:google,facebook,apple',
+        ]);
 
-    //     try {
-    //         $token    = $request->input('token');
-    //         $provider = $request->input('provider');
-    //         $response = $this->socialiteService->loginWithSocialite($provider, $token);
+        try {
+            $token    = $request->input('token');
+            $provider = $request->input('provider');
+            $response = $this->socialiteService->loginWithSocialite($provider, $token);
 
-    //         return $this->helper->jsonResponse(
-    //             true,
-    //             $response['message'],
-    //             $response['code'],
-    //             $response['data']
-    //         );
-    //     } catch (UnauthorizedHttpException $e) {
-    //         return $this->helper->jsonResponse(false, 'Unauthorized', 401, null, ['error' => $e->getMessage()]);
-    //     } catch (Exception $e) {
-    //         Log::error('Socialite Login Error: ' . $e->getMessage());
-    //         return $this->helper->jsonResponse(false, 'Something went wrong', 500, null, ['error' => $e->getMessage()]);
-    //     }
-    // }
+            return $this->helper->jsonResponse(
+                true,
+                $response['message'],
+                $response['code'],
+                $response['data']
+            );
+        } catch (UnauthorizedHttpException $e) {
+            return $this->helper->jsonResponse(false, 'Unauthorized', 401, null, ['error' => $e->getMessage()]);
+        } catch (Exception $e) {
+            Log::error('Socialite Login Error: ' . $e->getMessage());
+            return $this->helper->jsonResponse(false, 'Something went wrong', 500, null, ['error' => $e->getMessage()]);
+        }
+    }
 
 
 
@@ -134,71 +134,71 @@ class SocialiteController extends Controller {
     // }
 
 
-    public function SocialLogin(Request $request){
-        $request->validate([
-            'token'    => 'required',
-            'provider' => 'required|in:google,apple',
-        ]);
+    // public function SocialLogin(Request $request){
+    //     $request->validate([
+    //         'token'    => 'required',
+    //         'provider' => 'required|in:google,apple',
+    //     ]);
     
-        try {
-            $provider   = $request->provider;
-            $accessToken = $request->token;
+    //     try {
+    //         $provider   = $request->provider;
+    //         $accessToken = $request->token;
     
-            // Correct: get user from access token
-            $socialUser = Socialite::driver($provider)->stateless()->userFromToken($accessToken);
+    //         // Correct: get user from access token
+    //         $socialUser = Socialite::driver($provider)->stateless()->userFromToken($accessToken);
     
-            if ($socialUser) {
-                $user = User::where('email', $socialUser->getEmail())
-                            ->orWhere('provider_id', $socialUser->getId())
-                            ->first();
+    //         if ($socialUser) {
+    //             $user = User::where('email', $socialUser->getEmail())
+    //                         ->orWhere('provider_id', $socialUser->getId())
+    //                         ->first();
     
-                $isNewUser = false;
+    //             $isNewUser = false;
     
-                if (! $user) {
-                    $password = Str::random(16);
-                    $user = User::create([
-                        'name'              => $socialUser->getName() ?? $socialUser->getNickname(),
-                        'email'             => $socialUser->getEmail(),
-                        'password'          => bcrypt($password),
-                        'provider'          => $provider,
-                        'provider_id'       => $socialUser->getId(),
-                        'role'              => 'user',
-                        'email_verified_at' => now(),
-                    ]);
-                    $isNewUser = true;
-                }
+    //             if (! $user) {
+    //                 $password = Str::random(16);
+    //                 $user = User::create([
+    //                     'name'              => $socialUser->getName() ?? $socialUser->getNickname(),
+    //                     'email'             => $socialUser->getEmail(),
+    //                     'password'          => bcrypt($password),
+    //                     'provider'          => $provider,
+    //                     'provider_id'       => $socialUser->getId(),
+    //                     'role'              => 'user',
+    //                     'email_verified_at' => now(),
+    //                 ]);
+    //                 $isNewUser = true;
+    //             }
     
-                // Generate JWT or passport token
-                $token = auth('api')->login($user);
+    //             // Generate JWT or passport token
+    //             $token = auth('api')->login($user);
     
-                $data = [
-                    'id'            => $user->id,
-                    'email'         => $user->email,
-                    'role'          => $user->role,
-                    'token'         => $token, // Include token in response
-                ];
+    //             $data = [
+    //                 'id'            => $user->id,
+    //                 'email'         => $user->email,
+    //                 'role'          => $user->role,
+    //                 'token'         => $token, // Include token in response
+    //             ];
     
-                return response()->json([
-                    'status'  => true,
-                    'message' => $isNewUser ? 'User registered and logged in successfully.' : 'User logged in successfully.',
-                    'data'    => $data,
-                ], 200);
-            } else {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'Could not authenticate with ' . $provider,
-                ], 401);
-            }
+    //             return response()->json([
+    //                 'status'  => true,
+    //                 'message' => $isNewUser ? 'User registered and logged in successfully.' : 'User logged in successfully.',
+    //                 'data'    => $data,
+    //             ], 200);
+    //         } else {
+    //             return response()->json([
+    //                 'status'  => false,
+    //                 'message' => 'Could not authenticate with ' . $provider,
+    //             ], 401);
+    //         }
     
-        } catch (\Exception $e) {
-            Log::error('Social login error: ' . $e->getMessage());
-            return response()->json([
-                'status'  => false,
-                'message' => 'Something went wrong',
-                'error'   => $e->getMessage()
-            ], 500);
-        }
-    }
+    //     } catch (\Exception $e) {
+    //         Log::error('Social login error: ' . $e->getMessage());
+    //         return response()->json([
+    //             'status'  => false,
+    //             'message' => 'Something went wrong',
+    //             'error'   => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
 
     public function logout()
     {

@@ -1,14 +1,15 @@
 <?php
 namespace App\Http\Resources\Api\AddTouchpoint;
 
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Models\Contact;
+use App\Models\ChoosePlan;
+use App\Models\AddTouchpoint;
+
+
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-
-
-use App\Models\AddTouchpoint;
-use App\Models\ChoosePlan;
-use App\Models\Contact;
+use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Api\Contact\ContactResource;
 
 class AddTouchpointResource extends JsonResource
 {
@@ -21,7 +22,6 @@ class AddTouchpointResource extends JsonResource
     public function toArray($request)
     {
         return [
-
             'id' => $this->id,
             'contact_id' => $this->contact_id,
             'contact_type' => $this->contact_type,
@@ -29,7 +29,8 @@ class AddTouchpointResource extends JsonResource
             'start_date' => $this->start_date,
             'start_time' => $this->start_time,
             'cadence' => $this->cadence,
-            'notes' => $this->notes
+            'notes' => $this->notes,
+            'contact' => new ContactResource($this->whenLoaded('contact')), // Optional: wrap in resource
         ];
     } 
     

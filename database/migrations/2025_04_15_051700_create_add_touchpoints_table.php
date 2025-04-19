@@ -23,6 +23,7 @@ return new class extends Migration
             $table->enum('cadence', ['daily', 'weekly', 'monthly', 'custom']);
             $table->text('notes')->nullable();
 
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             $table->softDeletes();
