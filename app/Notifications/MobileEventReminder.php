@@ -14,23 +14,53 @@ class MobileEventReminder extends Notification
 {
     use Queueable;
 
-    private $event;
-    public function __construct(Event $event) { $this->event = $event; }
+    protected $Name;
+    protected $lat;
+    protected $long;
+    protected $address;
 
-    public function via($notifiable) {
-        return ['fcm'];
+    /**
+     * Create a new notification instance.
+     *
+     * @param string $Name
+     * @param string $lat
+     * @param string $long
+     * @param string $address
+     */
+    public function __construct($Name, $lat, $long, $address) {
+        $this->Name  = $Name;
+        $this->lat         = $lat;
+        $this->long        = $long;
+        $this->address     = $address;
     }
 
-    public function toFcm($notifiable) {
-        return FcmMessage::create()
-            ->setData([
-               'event_id'   => $this->event->id,
-               'title'      => $this->event->title,
-               'event_time' => (string)$this->event->event_time,
-            ])
-            ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-               ->setTitle('Upcoming: '.$this->event->title)
-               ->setBody('Starts at '.$this->event->event_time)
-            );
+    /**
+     * Get the notification’s delivery channels.
+     */
+    public function via($notifiable) {
+        return ['database'];
+    }
+
+    /**
+     * Get the array representation of the notification.
+     */
+    public function toArray($notifiable) {
+        return [
+            'name'  => $this->Name,
+            'latitude'     => $this->lat,
+            'longitude'    => $this->long,
+            'address'      => $this->address,
+            'message'      => "Emergency! {$this->Name} is in trouble. Their current location is {$this->address}",
+        ];
+    }
+
+    /**
+     * Data for push notification payload.
+     */
+    public function toPushNotification($notifiable) {
+        return [
+            'title' => 'Emergency Alert!',
+            'body'  => "{$this->Name}) needs help at {$this->address}. Coordinates: ({$this->lat}, {$this->long})",
+        ];
     }
 }

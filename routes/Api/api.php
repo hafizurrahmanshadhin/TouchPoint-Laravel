@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\CategoriesController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Api\ChoosePlan\ChoosePlanController;
 use App\Http\Controllers\Api\DeviceToken\DeviceTokenController;
+use App\Http\Controllers\Api\Notification\NotificationController;
 use App\Http\Controllers\Api\Subscription\SubscriptionController;
 use App\Http\Controllers\Api\AddTouchpoint\AddTouchpointController;
 use App\Http\Controllers\Api\FirebaseToken\FirebaseTokenController;
@@ -60,4 +61,8 @@ Route::get("firebase/test", [FirebaseTokenController::class, "test"]);
 Route::post("firebase/token/add", [FirebaseTokenController::class, "store"]);
 Route::post("firebase/token/get", [FirebaseTokenController::class, "getToken"]);
 Route::post("firebase/token/delete", [FirebaseTokenController::class, "deleteToken"]);
+
+// Emergency Route for sending emergency notification
+Route::get('/notifications', [NotificationController::class, 'getNotifications'])->middleware('auth.jwt');
+
     
