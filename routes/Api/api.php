@@ -1,15 +1,16 @@
 <?php
 
+use Twilio\TwiML\Video\Room;
 use App\Models\AddTouchpoint;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\DeviceToken\DeviceTokenController;
 use App\Http\Controllers\Api\ServicesController;
 use App\Http\Controllers\Api\CategoriesController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Api\ChoosePlan\ChoosePlanController;
+use App\Http\Controllers\Api\DeviceToken\DeviceTokenController;
 use App\Http\Controllers\Api\Subscription\SubscriptionController;
 use App\Http\Controllers\Api\AddTouchpoint\AddTouchpointController;
-use Twilio\TwiML\Video\Room;
+use App\Http\Controllers\Api\FirebaseToken\FirebaseTokenController;
 
 Route::get('/test', function () {
     return response()->json(['message' => 'Hello World']);
@@ -52,8 +53,11 @@ Route::resource('/subscription', SubscriptionController::class)
     Route::get('/subscription/list', [SubscriptionController::class, 'show'])->name('api.subscription.show');
 
 
-// Register api token
 
-Route::post('/device-tokens', [DeviceTokenController::class, 'store']);
-Route::post('/send-event-reminders', [EventReminderController::class, 'sendReminders']);
+
+// Firebase Token Module
+Route::get("firebase/test", [FirebaseTokenController::class, "test"]);
+Route::post("firebase/token/add", [FirebaseTokenController::class, "store"]);
+Route::post("firebase/token/get", [FirebaseTokenController::class, "getToken"]);
+Route::post("firebase/token/delete", [FirebaseTokenController::class, "deleteToken"]);
     

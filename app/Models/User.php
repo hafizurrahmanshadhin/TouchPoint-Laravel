@@ -48,4 +48,9 @@ class User extends Authenticatable implements JWTSubject {
     public function getJWTCustomClaims(): array {
         return [];
     }
+
+    public function firebaseTokens()
+    {
+        return $this->hasMany(FirebaseToken::class);
+    }
 }

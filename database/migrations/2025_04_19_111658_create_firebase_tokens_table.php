@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('device_tokens', function (Blueprint $table) {
+        Schema::create('firebase_tokens', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('token')->unique();
-            $table->string('platform'); 
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnUpdate()->restrictOnDelete();
+            $table->longText('token');
+            $table->longText('device_id');
 
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamp('created_at')->useCurrent();
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('device_tokens');
+        Schema::dropIfExists('firebase_tokens');
     }
 };
