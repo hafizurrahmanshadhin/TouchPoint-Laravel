@@ -30,7 +30,6 @@ Route::prefix('auth')->middleware(['throttle:10,1'])->group(function () {
         Route::post('/logout', [SocialiteController::class, 'logout']);
         Route::get('/profile', [SocialiteController::class, 'getProfile']);
     
-    
     });
 
 });

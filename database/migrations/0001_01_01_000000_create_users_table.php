@@ -18,6 +18,8 @@ return new class extends Migration {
 
             $table->string('avatar')->nullable();
             $table->string('cover_photo')->nullable();
+            $table->string('badge')->nullable();
+            
             $table->timestamp('otp_verified_at')->nullable();
 
             $table->enum('role', ['admin', 'user'])->default('user');

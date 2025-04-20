@@ -19,7 +19,7 @@ class AddTouchpoint extends Model
         'cadence',
         'notes',
         'contact_id',
-        'status'
+        'status',
 
     ];
     protected $casts = [
