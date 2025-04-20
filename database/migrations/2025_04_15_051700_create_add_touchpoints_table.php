@@ -23,9 +23,9 @@ return new class extends Migration
             $table->time('start_time');
             $table->enum('cadence', ['daily', 'weekly', 'monthly', 'custom']);
             $table->text('notes')->nullable();
-            $table->enum('status', ['completed', 'upcoming'])->nullable();
-            $table->date('touchpoint_date')->nullable();
+            $table->enum('status', ['active', 'inactive'])->default('active');
 
+            $table->enum('touchpoints', ['completed', 'upcoming'])->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             $table->softDeletes();

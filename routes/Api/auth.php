@@ -23,10 +23,6 @@ Route::prefix('auth')->middleware(['throttle:10,1'])->group(function () {
     Route::post('/socialite-login', [SocialiteController::class, 'socialiteLogin']);
  
     // Route::get('/login/callback', [SocialiteController::class, 'socialiteCallback']);
-
-
-
-  
     //   Route::post('/socialLogin', [SocialiteController::class, 'SocialLogin']);
     //     Route::post('/logout', [SocialiteController::class, 'logout'])->middleware(['auth.jwt']);
     //     Route::get('/profile', [SocialiteController::class, 'getProfile'])->middleware(['auth.jwt']);

@@ -20,16 +20,12 @@ class AddTouchpointController extends Controller
     public function index(Request $request)
     {
         $numberOfAddTouchpoint = $request->input('details');
-        Log::info('[DEBUG] Requested details numberOfAddTouchpoint:', ['numberOfAddTouchpoint' => $numberOfAddTouchpoint]);
 
-        $addTouchpoints = AddTouchpoint::with('user')
-            ->where('status', 'active')
+        $addTouchpoints = AddTouchpoint::where('status', 'active')
             ->latest()
             ->take($numberOfAddTouchpoint)
             ->get();
 
-
-            Log::info('[DEBUG] Requested details addTouchpoints:', ['addTouchpoints' => $addTouchpoints]);
 
         if ($addTouchpoints->isEmpty()) {
             return Helper::jsonResponse(
@@ -47,9 +43,6 @@ class AddTouchpointController extends Controller
             AddTouchpointResource::collection($addTouchpoints)
         );
     }
-
-
-   
 
 
     /**
