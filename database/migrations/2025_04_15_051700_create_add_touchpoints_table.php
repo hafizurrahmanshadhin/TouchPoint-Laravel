@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('add_touchpoints', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('contact_id');
-            $table->foreign('contact_id')->references('id')->on('contacts')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
+            $table->string('number');
             $table->enum('contact_type', ['personal', 'business']);
             $table->enum('contact_method', ['call', 'text', 'meetup']);
             $table->date('start_date');

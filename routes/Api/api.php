@@ -35,10 +35,12 @@ Route::delete('/contact/delete/{id}', [ContactController::class, 'destroy'])
     ->name('api.contact.destroy');
 
 // Add Touchpoint API route
-Route::resource('/add-touchpoint', AddTouchpointController::class)
-    ->names('api.add-touchpoint');
 
-Route::get('/add-touchpoint/list', [AddTouchpointController::class, 'index'])
+// Route::resource('/add-touchpoint', AddTouchpointController::class)
+//     ->names('api.add-touchpoint');
+
+
+Route::get('/add-touchpoint', [AddTouchpointController::class, 'index'])
     ->name('api.add-touchpoint.index');
 
 Route::get('/add-touchpoint/details/{id}', [AddTouchpointController::class, 'show'])

@@ -12,6 +12,8 @@ class AddTouchpoint extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'user_id',
+        'number',
         'contact_type',
         'contact_method',
         'start_date',
@@ -24,6 +26,8 @@ class AddTouchpoint extends Model
     ];
     protected $casts = [
         'id' => 'integer',
+        'user_id'=>'integer',
+        'number' =>'string',
         'contact_type' => 'string',
         'contact_method' => 'string',
         'start_date' => 'date',
@@ -38,8 +42,8 @@ class AddTouchpoint extends Model
     ];
 
 
-    public function contact()
+    public function user()
     {
-        return $this->belongsTo(Contact::class);
+        return $this->belongsTo(User::class);
     }
 }

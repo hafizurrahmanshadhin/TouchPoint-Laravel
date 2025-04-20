@@ -17,6 +17,8 @@ class RegisterResource extends JsonResource {
             'id'           => $this->id,
             'name'         => $this->name,
             'email'        => $this->email,
+            'provider'     => $this->provider,
+            'provider_id'  => $this->provider_id,
             'password'     => $this->password,
         ];
     }

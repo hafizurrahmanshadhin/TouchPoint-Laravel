@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api\AddTouchpoint;
+
 use App\Helpers\Helper;
 
 use Illuminate\Http\Request;
@@ -8,6 +9,7 @@ use App\Models\AddTouchpoint;
 use App\Models\Contact;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\AddTouchpoint\AddTouchpointResource;
+use Illuminate\Support\Facades\Log;
 use Google\Rpc\Help;
 
 class AddTouchpointController extends Controller
@@ -18,13 +20,17 @@ class AddTouchpointController extends Controller
     public function index(Request $request)
     {
         $numberOfAddTouchpoint = $request->input('details');
-    
-        $addTouchpoints = AddTouchpoint::with('contact')
+        Log::info('[DEBUG] Requested details numberOfAddTouchpoint:', ['numberOfAddTouchpoint' => $numberOfAddTouchpoint]);
+
+        $addTouchpoints = AddTouchpoint::with('user')
             ->where('status', 'active')
             ->latest()
             ->take($numberOfAddTouchpoint)
             ->get();
-    
+
+
+            Log::info('[DEBUG] Requested details addTouchpoints:', ['addTouchpoints' => $addTouchpoints]);
+
         if ($addTouchpoints->isEmpty()) {
             return Helper::jsonResponse(
                 false,
@@ -33,7 +39,7 @@ class AddTouchpointController extends Controller
                 []
             );
         }
-    
+
         return Helper::jsonResponse(
             true,
             'AddTouchpoint fetched successfully',
@@ -41,7 +47,11 @@ class AddTouchpointController extends Controller
             AddTouchpointResource::collection($addTouchpoints)
         );
     }
-    
+
+
+   
+
+
     /**
      * Show the form for creating a new resource.
      */
@@ -56,7 +66,8 @@ class AddTouchpointController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'contact_id' => 'required|exists:contacts,id',
+            'user_id' => 'required|exists:users,id', // ← changed from contacts to users
+            'number' => 'required|numeric|min:0',
             'contact_type' => 'required|in:personal,business',
             'contact_method' => 'required|in:call,text,meetup',
             'start_date' => 'required|date',
@@ -82,7 +93,6 @@ class AddTouchpointController extends Controller
             201,
             new AddTouchpointResource($addTouchpoint)
         );
-
     }
 
     /**
@@ -90,11 +100,10 @@ class AddTouchpointController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $addTouchpoint = AddTouchpoint::with('contact')
+        $addTouchpoint = AddTouchpoint::with('user')
             ->where('id', $id)
-            ->where('status', 'active')
             ->first();
-    
+
         if (!$addTouchpoint) {
             return Helper::jsonResponse(
                 false,
@@ -103,7 +112,7 @@ class AddTouchpointController extends Controller
                 []
             );
         }
-    
+
         return Helper::jsonResponse(
             true,
             'AddTouchpoint fetched successfully',
@@ -111,7 +120,7 @@ class AddTouchpointController extends Controller
             new AddTouchpointResource($addTouchpoint)
         );
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -125,57 +134,50 @@ class AddTouchpointController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $addTouchpoint = AddTouchpoint::find($id);
-    
-        if (!$addTouchpoint) {
-            return Helper::jsonResponse(
-                false,
-                'AddTouchpoint not found',
-                404,
-                []
-            );
-        }
-    
+        // Validate input
         $request->validate([
-            'contact_id' => 'required|exists:contacts,id',
+            'user_id' => 'required|exists:users,id',
+            'number' => 'required|numeric|min:0',
             'contact_type' => 'required|in:personal,business',
             'contact_method' => 'required|in:call,text,meetup',
             'start_date' => 'required|date',
             'start_time' => 'required|date_format:H:i',
             'cadence' => 'required|in:daily,weekly,monthly,custom',
-            'notes' => 'nullable|string',
+            'notes' => 'nullable|string'
         ]);
     
-        // Update the fields
-        $addTouchpoint->update($request->only([
-            'contact_id',
-            'contact_type',
-            'contact_method',
-            'start_date',
-            'start_time',
-            'cadence',
-            'notes'
-        ]));
+        // Find the record by ID
+        $addTouchpoint = AddTouchpoint::find($id);
     
-        // Load the contact relationship (if you want to return it)
-        $addTouchpoint->load('contact');
+        if (!$addTouchpoint) {
+            return Helper::jsonResponse(
+                false,
+                'Add Touchpoint not found',
+                404,
+                []
+            );
+        }
+    
+        // Update the record
+        $addTouchpoint->update($request->all());
     
         return Helper::jsonResponse(
             true,
-            'AddTouchpoint updated successfully',
+            'Add Touchpoint updated successfully',
             200,
             new AddTouchpointResource($addTouchpoint)
         );
     }
     
-    
+
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
         $addTouchpoint = AddTouchpoint::find($id);
-    
+
         if (!$addTouchpoint) {
             return Helper::jsonResponse(
                 false,
@@ -184,9 +186,9 @@ class AddTouchpointController extends Controller
                 []
             );
         }
-    
+
         $addTouchpoint->delete();
-    
+
         return Helper::jsonResponse(
             true,
             'AddTouchpoint deleted successfully',
@@ -194,5 +196,4 @@ class AddTouchpointController extends Controller
             []
         );
     }
-    
 }

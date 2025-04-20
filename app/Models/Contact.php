@@ -32,13 +32,7 @@ class Contact extends Model
      */
 
 
-    /**belong to
-     * Get the user that owns the contact.
-     */
-    public function add_touchpoints()
-    {
-        return $this->hasMany(AddTouchpoint::class);
-    }
+
 
     /**
      * Get the user that owns the contact.

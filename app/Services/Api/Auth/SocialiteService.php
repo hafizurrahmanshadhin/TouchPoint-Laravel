@@ -14,7 +14,7 @@ class SocialiteService {
      * Handle socialite login.
      */
     public function loginWithSocialite(string $provider, string $token): array {
-        if (!in_array($provider, ['google', 'facebook', 'apple'])) {
+        if (!in_array($provider, ['google'])) {
             throw new UnauthorizedHttpException('', 'Provider not supported');
         }
 

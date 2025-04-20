@@ -1,10 +1,7 @@
 <?php
 namespace App\Http\Resources\Api\AddTouchpoint;
 
-use App\Models\Contact;
-use App\Models\ChoosePlan;
 use App\Models\AddTouchpoint;
-
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -23,14 +20,15 @@ class AddTouchpointResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'contact_id' => $this->contact_id,
+            'user_id' => $this->user_id,
+            'number' => $this->number,
             'contact_type' => $this->contact_type,
             'contact_method' => $this->contact_method,
             'start_date' => $this->start_date,
             'start_time' => $this->start_time,
             'cadence' => $this->cadence,
             'notes' => $this->notes,
-            'contact' => new ContactResource($this->whenLoaded('contact')), // Optional: wrap in resource
+            // 'user' => new UserResource($this->whenLoaded('user')), // Optional: wrap in resource
         ];
     } 
     
