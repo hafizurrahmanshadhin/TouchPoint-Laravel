@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ChoosePlan extends Model
@@ -35,5 +36,16 @@ class ChoosePlan extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function cardDetails(): HasMany
+    {
+        return $this->hasMany(CardDetail::class);
+    }
 
 }

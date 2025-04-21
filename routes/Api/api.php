@@ -20,7 +20,7 @@ Route::get('/test', function () {
 
 // choose-plan api route
 Route::get('/choose-plan', [ChoosePlanController::class, 'index'])
-    ->name('api.choose-plan.index')->middleware('auth:api');
+    ->name('api.choose-plan.index');
 Route::get('/choose-plan/details/{id}', [ChoosePlanController::class, 'show'])
     ->name('api.choose-plan.show');
 Route::get('/choose-plan/list',[ChoosePlanController::class,'list'])->name('api.choose-plan.list');
