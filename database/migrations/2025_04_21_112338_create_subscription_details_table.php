@@ -25,6 +25,8 @@ return new class extends Migration
             $table->timestamp('plan_period_start')->nullable();
             $table->timestamp('plan_period_end')->nullable();
             $table->timestamp('trial_end')->nullable();
+            $table->integer('cancel')->default(0)->comment('0->active, 1->cancelled');
+            $table->timestamp('canceled_at')->nullable();
 
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamp('created_at')->useCurrent();

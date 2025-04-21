@@ -24,6 +24,7 @@ class SubscriptionDetail extends Model
         'plan_period_start',
         'plan_period_end',
         'trial_end',
+        'cancel',
         'status',
     ];
 
@@ -32,6 +33,7 @@ class SubscriptionDetail extends Model
         'plan_period_start' => 'datetime',
         'plan_period_end' => 'datetime',
         'trial_end' => 'datetime',
+        'cancel' => 'datetime',
         'plan_amount' => 'decimal:2',
     ];
 
