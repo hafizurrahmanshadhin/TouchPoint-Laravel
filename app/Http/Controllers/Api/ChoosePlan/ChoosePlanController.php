@@ -72,4 +72,31 @@ class ChoosePlanController extends Controller
 
     }
 
+    public function list(Request $request)
+    {
+        $numberOfchoosePlan = $request->input('details');
+    
+        $choosePlan = ChoosePlan::where('status', 'active')
+            ->latest()
+            ->take($numberOfchoosePlan)
+            ->get();
+    
+        if ($choosePlan->isEmpty()) {
+            return Helper::jsonResponse(
+                false,
+                'No choosePlan found',
+                404,
+                []
+            );
+        }
+    
+        return Helper::jsonResponse(
+            true,
+            'choosePlan fetched successfully',
+            200,
+            ChoosePlanResource::collection($choosePlan) 
+        );
+    }
+    
+
 }

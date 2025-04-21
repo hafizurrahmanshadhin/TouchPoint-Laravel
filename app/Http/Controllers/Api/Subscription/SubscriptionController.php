@@ -6,6 +6,7 @@ use Google\Rpc\Help;
 
 use App\Helpers\Helper;
 use App\Models\Subscription;
+use App\Models\ChoosePlan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Subscription\SubscriptionResource;
@@ -47,8 +48,9 @@ class SubscriptionController extends Controller
                 true,
                 'Subscription created successfully',
                 201,
-                // subscription::collection($subscription)
-                $subscription
+                // SubscriptionResource::collection($subscription)
+                new SubscriptionResource($subscription)
+                // $subscription
             );
         } else {
             return Helper::jsonResponse(
@@ -63,38 +65,45 @@ class SubscriptionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Subscription $subscription, $id)
-    {
-        // $subscription = Subscription::find($id);
+    // public function show($id)
+    // {
+    //     $subscription = Subscription::where('status','active')->get();
+    
+    //     if (!$subscription) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Subscription not found',
+    //             'code'    => 404
+    //         ], 404);
+    //     }
+    
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Subscription retrieved successfully',
+    //         'data' => new SubscriptionResource($subscription),
+    //     ], 200);
+    // }
 
-        // dd($subscription);
+    public function show($id)
+{
+    $subscriptions = Subscription::where('status', 'active')->get();
 
-        // if (!$subscription) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => 'Subscription not found',
-        //     ], 404);
-        // }
-
-        // return new SubscriptionResource($subscription);
-
-
-        // $subscription = Subscription::with('choosePlan')->find($id);
-
-        // dd($subscription);
-        // if (!$subscription) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => 'Subscription not found',
-        //     ], 404);
-        // }
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => 'Subscription retrieved successfully',
-        //     'data' => new SubscriptionResource($subscription),
-        // ], 200);
-        // return response()->json([
+    if ($subscriptions->isEmpty()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No active subscriptions found',
+            'code'    => 404
+        ], 404);
     }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Active subscriptions retrieved successfully',
+        'data' => SubscriptionResource::collection($subscriptions),
+    ], 200);
+}
+
+    
 
     /**
      * Show the form for editing the specified resource.

@@ -105,6 +105,7 @@ class SocialiteController extends Controller {
                 return response()->json([
                     'status'  => true,
                     'message' => $isNewUser ? 'User registered and logged in successfully.' : 'User logged in successfully.',
+                    'code'    =>200,
                     'data'    => $data,
                 ], 200);
 
@@ -112,6 +113,7 @@ class SocialiteController extends Controller {
                 return response()->json([
                     'status'  => false,
                     'message' => 'Could not authenticate with ' . $provider,
+                    'code'    => 401
                 ], 401);
             }
     
@@ -120,8 +122,9 @@ class SocialiteController extends Controller {
             return response()->json([
                 'status'  => false,
                 'message' => 'Something went wrong',
-                'error'   => $e->getMessage()
-            ], 500);
+                'code'    => 500,
+                'error'   => 'Token not validate'
+            ],500);
         }
     }
 
@@ -152,12 +155,12 @@ class SocialiteController extends Controller {
 
             $user = Auth::user();
 
-            if (! $user) {
+            if (!$user) {
                 return response()->json([
                     'status' => false,
+                    'code'   => 401,
                     'message' => 'Unauthenticated.',
                 ], 401);
-
 
             }
     

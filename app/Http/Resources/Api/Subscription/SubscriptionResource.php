@@ -22,8 +22,10 @@ class SubscriptionResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'user_id'=>$this->id,
+            'choose_plan_id'=>$this->id,
             // 'user' => new UserResource($this->whenLoaded('user')),
-            'choose_plan' => new ChoosePlanResource($this->whenLoaded('choosePlan')),
+            // 'choose_plan_id' => new ChoosePlanResource($this->whenLoaded('choosePlan')),
             'starts_at' => $this->starts_at,
             'ends_at' => $this->ends_at,
         ];

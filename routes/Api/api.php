@@ -12,16 +12,18 @@ use App\Http\Controllers\Api\Notification\NotificationController;
 use App\Http\Controllers\Api\Subscription\SubscriptionController;
 use App\Http\Controllers\Api\AddTouchpoint\AddTouchpointController;
 use App\Http\Controllers\Api\FirebaseToken\FirebaseTokenController;
+use App\Models\ChoosePlan;
 
 Route::get('/test', function () {
     return response()->json(['message' => 'Hello World']);
 });
 
 // choose-plan api route
-Route::get('/choose-plan/list', [ChoosePlanController::class, 'index'])
-    ->name('api.choose-plan.index');
+Route::get('/choose-plan', [ChoosePlanController::class, 'index'])
+    ->name('api.choose-plan.index')->middleware('auth:api');
 Route::get('/choose-plan/details/{id}', [ChoosePlanController::class, 'show'])
     ->name('api.choose-plan.show');
+Route::get('/choose-plan/list',[ChoosePlanController::class,'list'])->name('api.choose-plan.list');
 
 // Contact API route
 Route::resource('/contact', ContactController::class)
@@ -35,11 +37,8 @@ Route::delete('/contact/delete/{id}', [ContactController::class, 'destroy'])
     ->name('api.contact.destroy');
 
 // Add Touchpoint API route
-
 Route::resource('/add-touchpoint', AddTouchpointController::class)
     ->names('api.add-touchpoint');
-
-
 Route::get('/add-touchpoint', [AddTouchpointController::class, 'index'])
     ->name('api.add-touchpoint.index');
 Route::get('/add-touchpoint/details/{id}', [AddTouchpointController::class, 'show'])
@@ -51,9 +50,6 @@ Route::delete('/add-touchpoint/delete/{id}',[AddTouchpointController::class,'des
 Route::resource('/subscription', SubscriptionController::class)
     ->names('api.subscription');
     Route::get('/subscription/list', [SubscriptionController::class, 'show'])->name('api.subscription.show');
-
-
-
 
 // Firebase Token Module
 Route::get("firebase/test", [FirebaseTokenController::class, "test"]);
