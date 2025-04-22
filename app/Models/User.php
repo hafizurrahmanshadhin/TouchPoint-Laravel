@@ -43,11 +43,6 @@ class User extends Authenticatable implements JWTSubject {
     }
 
 
-    public function add_touchpoints()
-    {
-        return $this->hasMany(AddTouchpoint::class);
-    }
-
     public function getJWTIdentifier() {
         return $this->getKey();
     }

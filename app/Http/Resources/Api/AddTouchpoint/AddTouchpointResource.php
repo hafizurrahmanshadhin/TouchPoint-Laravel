@@ -19,15 +19,16 @@ class AddTouchpointResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'user_id' => $this->user_id,
-            'number' => $this->number,
-            'contact_type' => $this->contact_type,
+            // 'id' => $this->id,
+            // 'number' => $this->number,
+            // 'contact_type' => $this->contact_type,
             'contact_method' => $this->contact_method,
-            'start_date' => $this->start_date,
-            'start_time' => $this->start_time,
-            'cadence' => $this->cadence,
-            'notes' => $this->notes,
+            // 'start_date' => $this->start_date,
+            // 'start_time' => $this->start_time,
+            // 'custom_cadence' => $this->custom_cadence,
+            // 'cadence' => $this->cadence,
+            // 'notes' => $this->notes,
+            'due_status' => $this->due_status,
             // 'user' => new UserResource($this->whenLoaded('user')), // Optional: wrap in resource
         ];
     } 

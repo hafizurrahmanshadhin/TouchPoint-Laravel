@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('add_touchpoints', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->string('number');
             $table->enum('contact_type', ['personal', 'business']);
@@ -22,6 +20,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->time('start_time');
             $table->enum('cadence', ['daily', 'weekly', 'monthly', 'custom']);
+            $table->string('custom_cadence')->nullable();
             $table->text('notes')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
 

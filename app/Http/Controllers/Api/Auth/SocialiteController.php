@@ -18,7 +18,8 @@ use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class SocialiteController extends Controller {
+class SocialiteController extends Controller
+{
 
     // protected SocialiteService $socialiteService;
     // private Helper $helper;
@@ -61,23 +62,24 @@ class SocialiteController extends Controller {
     public function SocialLogin(Request $request){
         $request->validate([
             'token'    => 'required',
-            'provider' => 'required|in:google,apple',
+            'provider' => 'required|in:google,apple',           
+            'choose_plan_id' => 'nullable|exists:choose_plans,id', // 👈 optional or required based on your flow
         ]);
-    
+
         try {
             $provider   = $request->provider;
             $accessToken = $request->token;
-    
+
             // Correct: get user from access token
             $socialUser = Socialite::driver($provider)->stateless()->userFromToken($accessToken);
-    
+
             if ($socialUser) {
                 $user = User::where('email', $socialUser->getEmail())
                             ->orWhere('provider_id', $socialUser->getId())
                             ->first();
-    
+
                 $isNewUser = false;
-    
+
                 if (! $user) {
                     $password = Str::random(16);
                     $user = User::create([
@@ -85,23 +87,32 @@ class SocialiteController extends Controller {
                         'email'             => $socialUser->getEmail(),
                         'password'          => bcrypt($password),
                         'provider'          => $provider,
+                        'avatar'            => $socialUser->getAvatar(),
+                        'choose_plan_id'    => $request->choose_plan_id ?? null, // 👈 Set plan here
                         'provider_id'       => $socialUser->getId(),
                         'role'              => 'user',
                         'email_verified_at' => now(),
                     ]);
                     $isNewUser = true;
                 }
-    
+                 else {
+
+                    $user->choose_plan_id = $request->choose_plan_id ?? $user->choose_plan_id;
+                 
+                }
+
                 // Generate JWT or passport token
                 $token = auth('api')->login($user);
-    
+
                 $data = [
-                    'id'            => $user->id,
+                    'name'          => $user->name,
                     'email'         => $user->email,
                     'role'          => $user->role,
+                    'choose_plan_id' => $user->choose_plan_id,
+                    'avatar'        => $user->avatar,
                     'token'         => $token, // Include token in response
                 ];
-    
+
                 return response()->json([
                     'status'  => true,
                     'message' => $isNewUser ? 'User registered and logged in successfully.' : 'User logged in successfully.',
@@ -116,7 +127,7 @@ class SocialiteController extends Controller {
                     'code'    => 401
                 ], 401);
             }
-    
+
         } catch (\Exception $e) {
             Log::error('Social login error: ' . $e->getMessage());
             return response()->json([
@@ -127,6 +138,82 @@ class SocialiteController extends Controller {
             ],500);
         }
     }
+
+
+    // public function SocialLogin(Request $request)
+    // {
+    //     $request->validate([
+    //         'token'           => 'required',
+    //         'provider'        => 'required|in:google,apple',
+    //         'choose_plan_id'  => 'nullable|exists:choose_plans,id', // 👈 optional or required based on your flow
+    //     ]);
+
+    //     try {
+    //         $provider = $request->provider;
+    //         $accessToken = $request->token;
+
+    //         $socialUser = Socialite::driver($provider)->stateless()->userFromToken($accessToken);
+
+    //         if ($socialUser) {
+    //             $user = User::where('email', $socialUser->getEmail())
+    //                 ->orWhere('provider_id', $socialUser->getId())
+    //                 ->first();
+
+    //             $isNewUser = false;
+
+    //             if (!$user) {
+    //                 $password = Str::random(16);
+
+    //                 // 👇 If provided, use it; else fallback to default plan
+    //                 $planId = $request->choose_plan_id ?? $this->getDefaultPlanId();
+
+    //                 $user = User::create([
+    //                     'name'              => $socialUser->getName() ?? $socialUser->getNickname(),
+    //                     'email'             => $socialUser->getEmail(),
+    //                     'password'          => bcrypt($password),
+    //                     'provider'          => $provider,
+    //                     'provider_id'       => $socialUser->getId(),
+    //                     'role'              => 'user',
+    //                     'email_verified_at' => now(),
+    //                     'choose_plan_id'    => $planId, // 👈 Set plan here
+    //                 ]);
+
+    //                 $isNewUser = true;
+    //             }
+
+    //             $token = auth('api')->login($user);
+
+    //             $data = [
+    //                 'id'            => $user->id,
+    //                 'email'         => $user->email,
+    //                 'role'          => $user->role,
+    //                 'choose_plan_id' => $user->choose_plan_id,
+    //                 'token'         => $token,
+    //             ];
+
+    //             return response()->json([
+    //                 'status'  => true,
+    //                 'message' => $isNewUser ? 'User registered and logged in successfully.' : 'User logged in successfully.',
+    //                 'code'    => 200,
+    //                 'data'    => $data,
+    //             ]);
+    //         } else {
+    //             return response()->json([
+    //                 'status'  => false,
+    //                 'message' => 'Could not authenticate with ' . $provider,
+    //                 'code'    => 401
+    //             ], 401);
+    //         }
+    //     } catch (\Exception $e) {
+    //         Log::error('Social login error: ' . $e->getMessage());
+    //         return response()->json([
+    //             'status'  => false,
+    //             'message' => 'Something went wrong',
+    //             'code'    => 500,
+    //             'error'   => 'Token not validate'
+    //         ], 500);
+    //     }
+    // }
 
     public function logout()
     {
@@ -161,15 +248,21 @@ class SocialiteController extends Controller {
                     'code'   => 401,
                     'message' => 'Unauthenticated.',
                 ], 401);
-
             }
-    
-            return Helper::jsonResponse(
-                true,
-                'User profile',
-                200,
-                $user
-            );
+
+            return response()->json([
+                'status' => true,
+                'code'   => 200,
+                'message' => 'User profile fetched successfully.',
+                'data'   => [
+                    'name'  => $user->name,
+                    'email' => $user->email,
+                    'avatar'=> $user->avatar,
+                    // Add other user fields as needed
+                ],
+            ], 200);
+
+
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
@@ -178,6 +271,4 @@ class SocialiteController extends Controller {
             ], 500);
         }
     }
-    
-
 }

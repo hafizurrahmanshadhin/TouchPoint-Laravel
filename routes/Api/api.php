@@ -44,10 +44,13 @@ Route::middleware('auth:api')->group(function () {
 // Add Touchpoint API route
 Route::middleware('auth:api')->group(function () {
 
-    Route::resource('/add-touchpoint', AddTouchpointController::class)
-        ->names('api.add-touchpoint');
+    // Touchpoint list route
     Route::get('/add-touchpoint', [AddTouchpointController::class, 'index'])
         ->name('api.add-touchpoint.index');
+    // store route
+    Route::resource('/add-touchpoint', AddTouchpointController::class)
+        ->names('api.add-touchpoint');
+
     Route::get('/add-touchpoint/details/{id}', [AddTouchpointController::class, 'show'])
         ->name('api.add-touchpoint.show');
     Route::post('/add-touchpoint/edit/{id}', [AddTouchpointController::class, 'update']);
