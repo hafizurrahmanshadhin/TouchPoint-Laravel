@@ -18,5 +18,4 @@ Route::post('/choose-plan/status/{id}', [ChoosePlanController::class, 'status'])
 // Route::resource('/user-list', UserController::class)->names('user-list');
 // Route::post('/user-list/status/{id}', [UserController::class, 'status'])->name('user-list.status');
 
-
 // Use group route

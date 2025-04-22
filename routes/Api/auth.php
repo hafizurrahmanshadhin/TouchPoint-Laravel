@@ -33,7 +33,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [SocialiteController::class, 'logout']);
     Route::get('/profile', [SocialiteController::class, 'getProfile']);
 
-
 });
     
 
