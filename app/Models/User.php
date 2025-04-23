@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
+use App\Models\Plan;
+use App\Models\UserSubscription;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject {
     use HasFactory, Notifiable, SoftDeletes, HasApiTokens;
-
 
     protected $guarded = [];
 
@@ -23,25 +25,24 @@ class User extends Authenticatable implements JWTSubject {
 
     protected function casts(): array {
         return [
-            'id'                   => 'integer',
-            'email_verified_at'    => 'datetime',
-            'otp_verified_at'      => 'datetime',
-            'password'             => 'hashed',
-            'name'                 => 'string',
-            'email'                => 'string',
-            'avatar'               => 'string',
-            'cover_photo'          => 'string',
-            'token'                => 'string',
-            'provider'             => 'string',
-            'provider_id'          => 'string',
-            'role'                 => 'string',
-            'status'               => 'string',
-            'created_at'           => 'datetime',
-            'updated_at'           => 'datetime',
-            'deleted_at'           => 'datetime',
+            'id'                => 'integer',
+            'first_name'        => 'string',
+            'last_name'         => 'string',
+            'email'             => 'string',
+            'email_verified_at' => 'datetime',
+            'password'          => 'hashed',
+            'avatar'            => 'string',
+            'cover_photo'       => 'string',
+            'google_id'         => 'string',
+            'apple_id'          => 'string',
+            'role'              => 'string',
+            'status'            => 'string',
+            'remember_token'    => 'string',
+            'created_at'        => 'datetime',
+            'updated_at'        => 'datetime',
+            'deleted_at'        => 'datetime',
         ];
     }
-
 
     public function getJWTIdentifier() {
         return $this->getKey();
@@ -51,23 +52,27 @@ class User extends Authenticatable implements JWTSubject {
         return [];
     }
 
-    public function firebaseTokens()
-    {
-        return $this->hasMany(FirebaseToken::class);
+    public function userSubscription(): HasOne {
+        return $this->hasOne(UserSubscription::class);
     }
 
-    public function subscriptions(): HasMany
-    {
-        return $this->hasMany(Subscription::class);
+    public function plan(): HasOneThrough {
+        return $this->hasOneThrough(Plan::class, UserSubscription::class);
     }
 
-    public function subscriptionDetails(): HasMany
-    {
-        return $this->hasMany(SubscriptionDetail::class);
+    public function activeSubscription(): HasOne {
+        return $this->hasOne(UserSubscription::class)
+            ->where('status', 'active');
     }
 
-    public function cardDetails(): HasMany
-    {
-        return $this->hasMany(CardDetail::class);
+    public function activePlan(): HasOneThrough {
+        return $this->hasOneThrough(
+            Plan::class,
+            UserSubscription::class,
+            'user_id', // FK on subscriptions
+            'id', // PK on plans
+            'id', // local key on users
+            'plan_id' // local key on subscriptions
+        )->where('user_subscriptions.status', 'active');
     }
 }

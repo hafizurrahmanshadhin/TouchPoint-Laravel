@@ -77,7 +77,7 @@
                                     alt="Header Avatar">
                                 <span class="text-start ms-xl-2">
                                     <span
-                                        class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ ucfirst(Auth::user()->name)  ?? '' }}</span>
+                                        class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{ ucfirst(Auth::user()->first_name) . ' ' . ucfirst(Auth::user()->last_name) ?? '' }}</span>
                                     <span
                                         class="d-none d-xl-block ms-1 fs-sm user-name-sub-text">{{ ucfirst(Auth::user()->role) ?? '' }}</span>
                                 </span>
@@ -86,7 +86,7 @@
 
                         <div class="dropdown-menu dropdown-menu-end" style="">
                             <h6 class="dropdown-header">
-                                {{ 'Welcome ' . ucfirst(Auth::user()->name) ?? '' }}
+                                {{ 'Welcome ' . ucfirst(Auth::user()->first_name) . ' ' . ucfirst(Auth::user()->last_name) . '!' ?? '' }}
                             </h6>
                             <a class="dropdown-item" href="{{ route('profile.setting') }}"><i
                                     class="mdi mdi-account-circle text-muted fs-lg align-middle me-1"></i>

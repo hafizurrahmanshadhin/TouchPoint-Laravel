@@ -33,6 +33,15 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->group(base_path('routes/Api/auth.php'));
         },
     )
+    ->withBroadcasting(
+        __DIR__ . '/../routes/channels.php',
+        [
+            'prefix'     => 'api',
+            'middleware' => [
+                'api', 'auth.jwt',
+            ],
+        ],
+    )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'admin'    => AdminMiddleware::class,

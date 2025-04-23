@@ -2,16 +2,17 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Database\Seeders\UserSeeder;
-use Database\Seeders\ServiceSeeder;
+use Database\Seeders\PlanSeeder;
 use Database\Seeders\SystemSettingSeeder;
+use Database\Seeders\UserSeeder;
+use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder {
     public function run(): void {
         $this->call([
             UserSeeder::class,
             SystemSettingSeeder::class,
+            PlanSeeder::class,
         ]);
     }
 }

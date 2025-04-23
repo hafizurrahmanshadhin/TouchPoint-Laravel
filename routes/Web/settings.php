@@ -31,6 +31,5 @@ Route::controller(MailSettingsController::class)->group(function () {
 Route::controller(IntegrationController::class)->group(function () {
     Route::get('/integration-setting', 'index')->name('integration.setting');
     Route::patch('/google-setting', 'updateGoogleCredentials')->name('google.update');
-    Route::patch('/facebook-setting', 'updateFacebookCredentials')->name('facebook.update');
-    Route::patch('/stripe-setting', 'updateStripeCredentials')->name('stripe.update');
+    Route::patch('/apple-setting', 'updateAppleCredentials')->name('apple.update');
 });

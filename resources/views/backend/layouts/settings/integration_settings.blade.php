@@ -30,15 +30,11 @@
                                         data-bs-target="#google" type="button" role="tab" aria-controls="google"
                                         aria-selected="true">Google</button>
                                 </li>
+
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="facebook-tab" data-bs-toggle="tab"
-                                        data-bs-target="#facebook" type="button" role="tab" aria-controls="facebook"
-                                        aria-selected="false">Facebook</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="stripe-tab" data-bs-toggle="tab" data-bs-target="#stripe"
-                                        type="button" role="tab" aria-controls="stripe"
-                                        aria-selected="false">Stripe</button>
+                                    <button class="nav-link" id="apple-tab" data-bs-toggle="tab" data-bs-target="#apple"
+                                        type="button" role="tab" aria-controls="apple"
+                                        aria-selected="false">Apple</button>
                                 </li>
                             </ul>
                             <div class="tab-content mt-4" id="myTabContent">
@@ -92,26 +88,27 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade" id="facebook" role="tabpanel" aria-labelledby="facebook-tab">
+
+                                <div class="tab-pane fade" id="apple" role="tabpanel" aria-labelledby="apple-tab">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h5>Facebook Settings</h5>
+                                            <h5>Apple Settings</h5>
                                         </div>
                                         <div class="card-body">
-                                            <form method="POST" action="{{ route('facebook.update') }}">
+                                            <form method="POST" action="{{ route('apple.update') }}">
                                                 @csrf
                                                 @method('PATCH')
                                                 <div class="row gy-4">
                                                     <div class="col-md-6">
                                                         <div class="mb-3">
-                                                            <label for="FACEBOOK_CLIENT_ID" class="form-label">Facebook
-                                                                Client Id:</label>
+                                                            <label for="APPLE_CLIENT_ID" class="form-label">Apple Client
+                                                                Id:</label>
                                                             <input type="text"
-                                                                class="form-control @error('FACEBOOK_CLIENT_ID') is-invalid @enderror"
-                                                                name="FACEBOOK_CLIENT_ID" id="FACEBOOK_CLIENT_ID"
-                                                                placeholder="Please Enter Your Facebook Client Id"
-                                                                value="{{ env('FACEBOOK_CLIENT_ID') }}">
-                                                            @error('FACEBOOK_CLIENT_ID')
+                                                                class="form-control @error('APPLE_CLIENT_ID') is-invalid @enderror"
+                                                                name="APPLE_CLIENT_ID" id="APPLE_CLIENT_ID"
+                                                                placeholder="Please Enter Your Apple Client Id"
+                                                                value="{{ env('APPLE_CLIENT_ID') }}">
+                                                            @error('APPLE_CLIENT_ID')
                                                                 <span class="text-danger">{{ $message }}</span>
                                                             @enderror
                                                         </div>
@@ -119,69 +116,36 @@
 
                                                     <div class="col-md-6">
                                                         <div class="mb-3">
-                                                            <label for="FACEBOOK_CLIENT_SECRET"
-                                                                class="form-label">Facebook Client Secret:</label>
+                                                            <label for="APPLE_TEAM_ID" class="form-label">Apple Team
+                                                                Id:</label>
                                                             <input type="text"
-                                                                class="form-control @error('FACEBOOK_CLIENT_SECRET') is-invalid @enderror"
-                                                                name="FACEBOOK_CLIENT_SECRET" id="FACEBOOK_CLIENT_SECRET"
-                                                                placeholder="Please Enter Your Facebook Client Secret"
-                                                                value="{{ env('FACEBOOK_CLIENT_SECRET') }}">
-                                                            @error('FACEBOOK_CLIENT_SECRET')
+                                                                class="form-control @error('APPLE_TEAM_ID') is-invalid @enderror"
+                                                                name="APPLE_TEAM_ID" id="APPLE_TEAM_ID"
+                                                                placeholder="Please Enter Your Apple Team Id"
+                                                                value="{{ env('APPLE_TEAM_ID') }}">
+                                                            @error('APPLE_TEAM_ID')
+                                                                <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label for="APPLE_KEY_ID" class="form-label">Apple Key
+                                                                Id:</label>
+                                                            <input type="text"
+                                                                class="form-control @error('APPLE_KEY_ID') is-invalid @enderror"
+                                                                name="APPLE_KEY_ID" id="APPLE_KEY_ID"
+                                                                placeholder="Please Enter Your Apple Key Id"
+                                                                value="{{ env('APPLE_KEY_ID') }}">
+                                                            @error('APPLE_KEY_ID')
                                                                 <span class="text-danger">{{ $message }}</span>
                                                             @enderror
                                                         </div>
                                                     </div>
 
                                                     <div class="col-12 mt-3">
-                                                        <button type="submit" class="btn btn-primary">Save Facebook
-                                                            Settings</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="stripe" role="tabpanel" aria-labelledby="stripe-tab">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h5>Stripe Settings</h5>
-                                        </div>
-                                        <div class="card-body">
-                                            <form method="POST" action="{{ route('stripe.update') }}">
-                                                @csrf
-                                                @method('PATCH')
-                                                <div class="row gy-4">
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label for="STRIPE_KEY" class="form-label">Stripe Key:</label>
-                                                            <input type="text"
-                                                                class="form-control @error('STRIPE_KEY') is-invalid @enderror"
-                                                                name="STRIPE_KEY" id="STRIPE_KEY"
-                                                                placeholder="Please Enter Your Stripe Key"
-                                                                value="{{ env('STRIPE_KEY') }}">
-                                                            @error('STRIPE_KEY')
-                                                                <span class="text-danger">{{ $message }}</span>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label for="STRIPE_SECRET" class="form-label">Stripe
-                                                                Secret:</label>
-                                                            <input type="text"
-                                                                class="form-control @error('STRIPE_SECRET') is-invalid @enderror"
-                                                                name="STRIPE_SECRET" id="STRIPE_SECRET"
-                                                                placeholder="Please Enter Your Stripe Secret"
-                                                                value="{{ env('STRIPE_SECRET') }}">
-                                                            @error('STRIPE_SECRET')
-                                                                <span class="text-danger">{{ $message }}</span>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-12 mt-3">
-                                                        <button type="submit" class="btn btn-primary">Save Stripe
+                                                        <button type="submit" class="btn btn-primary">Save Apple
                                                             Settings</button>
                                                     </div>
                                                 </div>
@@ -190,7 +154,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div> {{-- End card body --}}
+                        </div>
                     </div>
                 </div>
             </div>

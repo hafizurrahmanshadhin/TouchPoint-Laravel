@@ -56,13 +56,15 @@
                     </a>
                 </li>
 
+                {{-- Subscription Plan --}}
                 <li class="nav-item">
-                    <a href="{{ route('choose.plan.index') }}"
-                        class="nav-link menu-link {{ request()->routeIs('choose.plan.index', 'choose.plan.edit','choose.plan.create') ? 'active' : '' }}">
-                        <i class="ri-price-tag-3-fill"></i>
-                        <span data-key="t-dashboard">Choose Plan</span>
+                    <a href="{{ route('subscription-plan.index') }}"
+                        class="nav-link menu-link {{ request()->routeIs('subscription-plan.*') ? 'active' : '' }}">
+                        <i class="ri-repeat-fill"></i>
+                        <span data-key="t-dashboard">Subscription Plan</span>
                     </a>
                 </li>
+
                 <hr>
                 {{-- Settings --}}
                 <li class="nav-item">

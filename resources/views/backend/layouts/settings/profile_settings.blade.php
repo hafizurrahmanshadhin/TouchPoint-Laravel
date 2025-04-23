@@ -81,7 +81,7 @@
                                 </div>
 
                                 <div class="mt-3">
-                                    <h3>{{ ucfirst(Auth::user()->firstName) . ' ' . ucfirst(Auth::user()->name) ?? '' }}<i
+                                    <h3>{{ ucfirst(Auth::user()->first_name) . ' ' . ucfirst(Auth::user()->last_name) ?? '' }}<i
                                             class="bi bi-patch-check-fill align-baseline text-info ms-1"></i></h3>
                                     <h6 class="text-muted">{{ Auth::user()->email ?? '' }}</h6>
                                 </div>
@@ -124,13 +124,13 @@
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
-                                                    <label for="name" class="form-label">Name</label>
+                                                    <label for="first_name" class="form-label">First Name</label>
                                                     <input type="text"
-                                                        class="form-control @error('name') is-invalid @enderror"
-                                                        id="name" name="name"
-                                                        placeholder="Enter Your Name"
-                                                        value="{{ Auth::user()->name }}">
-                                                    @error('name')
+                                                        class="form-control @error('first_name') is-invalid @enderror"
+                                                        id="first_name" name="first_name"
+                                                        placeholder="Enter Your First Name"
+                                                        value="{{ Auth::user()->first_name }}">
+                                                    @error('first_name')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
                                                 </div>
@@ -138,13 +138,12 @@
 
                                             <div class="col-lg-6">
                                                 <div class="mb-3">
-                                                    <label for="phone_number" class="form-label">Phone Number</label>
+                                                    <label for="last_name" class="form-label">Last Name</label>
                                                     <input type="text"
-                                                        class="form-control @error('phone_number') is-invalid @enderror"
-                                                        id="phone_number" name="phone_number"
-                                                        placeholder="Enter Your Phone Number"
-                                                        value="{{ Auth::user()->phone_number }}">
-                                                    @error('phone_number')
+                                                        class="form-control @error('last_name') is-invalid @enderror"
+                                                        id="last_name" name="last_name" placeholder="Enter Your Last Name"
+                                                        value="{{ Auth::user()->last_name }}">
+                                                    @error('last_name')
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
                                                 </div>

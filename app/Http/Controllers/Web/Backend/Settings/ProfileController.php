@@ -33,8 +33,8 @@ class ProfileController extends Controller {
      */
     public function UpdateProfile(Request $request) {
         $validator = Validator::make($request->all(), [
-            'name'   => 'required|string|max:200|min:2',
-            'phone_number' => 'required|numeric|unique:users,phone_number,' . auth()->user()->id,
+            'first_name'   => 'required|string|max:200|min:2',
+            'last_name'    => 'required|string|max:200|min:2',
             'email'        => 'required|email|unique:users,email,' . auth()->user()->id,
         ]);
 
@@ -43,8 +43,8 @@ class ProfileController extends Controller {
         }
         try {
             $user               = User::find(auth()->user()->id);
-            $user->name         = $request->name;
-            $user->phone_number = $request->phone_number;
+            $user->first_name   = $request->first_name;
+            $user->last_name    = $request->last_name;
             $user->email        = $request->email;
 
             $user->save();

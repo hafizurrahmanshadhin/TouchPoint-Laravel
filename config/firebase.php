@@ -50,9 +50,7 @@ return [
              *
              */
 
-            // 'credentials' => env('FIREBASE_CREDENTIALS', env('GOOGLE_APPLICATION_CREDENTIALS')),
-            
-            'credentials' => storage_path('app/test-firebase-project-42eba-firebase-adminsdk-fbsvc-781adabc45.json'),
+            'credentials' => env('FIREBASE_CREDENTIALS', env('GOOGLE_APPLICATION_CREDENTIALS')),
 
             /*
              * ------------------------------------------------------------------------

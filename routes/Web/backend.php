@@ -1,21 +1,15 @@
 <?php
 
-use App\Http\Controllers\Web\Backend\CategoriesController;
-use App\Http\Controllers\Web\Backend\ChoosePlan\ChoosePlanController;
 use App\Http\Controllers\Web\Backend\DashboardController;
-use App\Http\Controllers\Web\Backend\ServicesController;
-use App\Models\ChoosePlan;
+use App\Http\Controllers\Web\Backend\SubscriptionPlanController;
 use Illuminate\Support\Facades\Route;
 
 //! Route for Admin Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-
-// Route for Admin Choose Plan
-Route::resource('/choose-plan', ChoosePlanController::class)->names('choose.plan')->middleware('auth');
-Route::post('/choose-plan/status/{id}', [ChoosePlanController::class, 'status'])->name('choose.status');
-
-// Route::resource('/user-list', UserController::class)->names('user-list');
-// Route::post('/user-list/status/{id}', [UserController::class, 'status'])->name('user-list.status');
-
-// Use group route
+//! Route for Subscription Plan Backend
+Route::controller(SubscriptionPlanController::class)->group(function () {
+    Route::get('/subscription-plan', 'index')->name('subscription-plan.index');
+    Route::put('/subscription-plan/update/{id}', 'update')->name('subscription-plan.update');
+    Route::get('/subscription-plan/status/{id}', 'status')->name('subscription-plan.status');
+});

@@ -3,14 +3,11 @@
 namespace App\Helpers;
 
 use Exception;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Database\Eloquent\Model;
-use Kreait\Firebase\Messaging\CloudMessage;
-use Kreait\Firebase\Factory;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
 
 class Helper {
     /**
@@ -65,20 +62,6 @@ class Helper {
         } else {
             Log::warning('File not found for deletion: ' . $path);
         }
-    }
-
-    public static function sendNotifyMobile($token, $notifyData): void
-    {
-        try {
-            $factory = (new Factory)->withServiceAccount(storage_path(env('FIREBASE_CREDENTIALS')));
-            $messaging = $factory->createMessaging();
-            $notification = Notification::create($notifyData['title'], Str::limit($notifyData['body'], 100), $notifyData['icon']);
-            $message = CloudMessage::withTarget('token', $token)->withNotification($notification);
-            $messaging->send($message);
-        } catch (Exception $exception) {
-            Log::error($exception->getMessage());
-        }
-        return;
     }
 
     /**

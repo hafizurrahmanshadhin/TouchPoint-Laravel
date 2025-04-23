@@ -1,15 +1,15 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Web\Auth\PasswordController;
-use App\Http\Controllers\Web\Auth\SocialiteController;
-use App\Http\Controllers\Web\Auth\NewPasswordController;
-use App\Http\Controllers\Web\Auth\VerifyEmailController;
-use App\Http\Controllers\Web\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Web\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Web\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Web\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Web\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Web\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Web\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Web\Auth\NewPasswordController;
+use App\Http\Controllers\Web\Auth\PasswordController;
+use App\Http\Controllers\Web\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Web\Auth\SocialiteController;
+use App\Http\Controllers\Web\Auth\VerifyEmailController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
     // Route::get('register', [RegisteredUserController::class, 'create'])
@@ -58,15 +58,5 @@ Route::middleware('auth')->group(function () {
         ->name('logout');
 });
 
-// Route::get('/login/google', [SocialiteController::class, 'GoogleRedirect'])->name('google-login');
-// Route::get('/login/google/callback', [SocialiteController::class, 'GoogleCallback']);
-
-// Route::controller(SocialiteController::class)->group(function () {
-//     Route::get('/login/google', 'GoogleRedirect');
-//     Route::get('/login/google/callback', 'GoogleCallback');
-// });
-
-Route::controller(SocialiteController::class)->group(function () {
-    Route::get('/login/google', 'GoogleRedirect');
-    Route::get('/login/google/callback', 'GoogleCallback');
-});
+Route::get('/login/google', [SocialiteController::class, 'GoogleRedirect'])->name('google-login');
+Route::get('/login/google/callback', [SocialiteController::class, 'GoogleCallback']);

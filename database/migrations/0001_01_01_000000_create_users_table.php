@@ -8,22 +8,18 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
+
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('email')->unique()->nullable(false);
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-
-            $table->string('provider')->nullable();
-            $table->string('provider_id')->nullable();
-
+            $table->string('password')->nullable();
             $table->string('avatar')->nullable();
             $table->string('cover_photo')->nullable();
-            $table->string('badge')->nullable();
-            $table->boolean('is_subscription')->default(0);
-            
-            $table->timestamp('otp_verified_at')->nullable();
+            $table->string('google_id')->nullable()->unique();
+            $table->string('apple_id')->nullable()->unique();
 
-            $table->enum('role', ['admin', 'user'])->default('user');
+            $table->enum('role', ['admin', 'user'])->default('user')->nullable(false);
             $table->enum('status', ['active', 'inactive'])->default('active');
 
             $table->rememberToken();
