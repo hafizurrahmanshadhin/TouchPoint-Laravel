@@ -1,17 +1,9 @@
-# API Dashboard Dosix
+# tbriggs0213
 
-## Reverb Installed for Chatting and Realtime Events
-
-## Firebase Installed for Push Notifications
-
-```shell
-php artisan optimize:clear
-php artisan route:clear
-php artisan cache:clear
-php artisan config:clear
-php artisan view:clear
-~~~
-
-```test
-php artisan test --filter=RegisterServiceTest
+``` markdown
+1. php artisan serve
 ```
+
+## [Postman Collection](.)
+
+## [Live Link Our Server](.)
