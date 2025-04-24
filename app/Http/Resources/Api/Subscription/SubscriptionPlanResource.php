@@ -15,7 +15,8 @@ class SubscriptionPlanResource extends JsonResource {
         return [
             'id'                => $this->id,
             'subscription_plan' => $this->subscription_plan,
-            'price'             => (float) $this->price,
+            // 'price'             => (float) $this->price,
+            'price'             => round($this->price, 2),
             'billing_cycle'     => $this->billing_cycle,
             'touch_points'      => $this->touch_points === null ? 'Unlimited Touchpoints' : $this->touch_points,
             'has_ads'           => (bool) $this->has_ads,
