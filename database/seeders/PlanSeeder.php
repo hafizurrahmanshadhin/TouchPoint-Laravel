@@ -12,7 +12,7 @@ class PlanSeeder extends Seeder {
             [
                 'id'                => 1,
                 'subscription_plan' => 'free',
-                'price'             => number_format(0.00, 2, '.', ''),
+                'price'             => 0.00,
                 'billing_cycle'     => 'monthly',
                 'touch_points'      => 15,
                 'has_ads'           => true,
@@ -25,7 +25,7 @@ class PlanSeeder extends Seeder {
             [
                 'id'                => 2,
                 'subscription_plan' => 'monthly',
-                'price'             => number_format(4.99, 2, '.', ''),
+                'price'             => 4.99,
                 'billing_cycle'     => 'monthly',
                 'touch_points'      => null,
                 'has_ads'           => false,
@@ -38,7 +38,7 @@ class PlanSeeder extends Seeder {
             [
                 'id'                => 3,
                 'subscription_plan' => 'yearly',
-                'price'             => number_format(49.99, 2, '.', ''),
+                'price'             => 49.99,
                 'billing_cycle'     => 'yearly',
                 'touch_points'      => null,
                 'has_ads'           => false,
@@ -51,7 +51,7 @@ class PlanSeeder extends Seeder {
             [
                 'id'                => 4,
                 'subscription_plan' => 'lifetime',
-                'price'             => number_format(89.99, 2, '.', ''),
+                'price'             => 89.99,
                 'billing_cycle'     => 'lifetime',
                 'touch_points'      => null,
                 'has_ads'           => false,
