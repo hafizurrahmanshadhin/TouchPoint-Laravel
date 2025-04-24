@@ -1,4 +1,5 @@
-Because the secret still lives in commit 269dacb8…, GitHub will keep blocking every push that includes that SHA—even if you’ve since deleted the file. If you truly don’t want to rewrite history, your only path is to tell GitHub “I acknowledge this secret and I want it allowed.” Here’s how:
+Because the secret still lives in commit 269dacb8…,
+GitHub will keep blocking every push that includes that SHA—even if you’ve since deleted the file. If you truly don’t want to rewrite history, your only path is to tell GitHub “I acknowledge this secret and I want it allowed.” Here’s how:
 
 Open the unblock URL that GitHub printed in your error:
 
