@@ -27,7 +27,7 @@ class Plan extends Model {
     protected $casts = [
         'id'                => 'integer',
         'subscription_plan' => 'string',
-        'price'             => 'decimal:2',
+        'price'             => 'float',
         'billing_cycle'     => 'string',
         'touch_points'      => 'integer',
         'has_ads'           => 'boolean',
