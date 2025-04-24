@@ -16,13 +16,20 @@ use Illuminate\Support\Facades\Validator;
 class SubscriptionController extends Controller {
     public function index(): JsonResponse {
         try {
-            $SubscriptionPlans = Plan::where('status', 'active')->orderBy('id', 'asc')->get();
+            $plans = Plan::where('status', 'active')->orderBy('id')->get();
 
-            return Helper::jsonResponse(true, 'Subscription plans retrieved successfully.', 200,
-                SubscriptionPlanResource::collection($SubscriptionPlans)
+            return Helper::jsonResponse(
+                true,
+                'Subscription plans retrieved successfully.',
+                200,
+                SubscriptionPlanResource::collection($plans)
             );
         } catch (Exception $e) {
-            return Helper::jsonResponse(false, 'An error occurred while fetching subscription plans.', 500, null,
+            return Helper::jsonResponse(
+                false,
+                'An error occurred while fetching subscription plans.',
+                500,
+                null,
                 ['exception' => $e->getMessage()]
             );
         }
@@ -42,39 +49,40 @@ class SubscriptionController extends Controller {
             $user = auth()->user();
 
             // 2) Fetch the plan and ensure it's active
-            $SubscriptionPlan = Plan::where('status', 'active')->findOrFail($request->plan_id);
+            $plan = Plan::where('status', 'active')->findOrFail($request->plan_id);
 
-            // 3) Cancel any existing active subscription
-            UserSubscription::where('user_id', $user->id)
-                ->where('status', 'active')
-                ->update([
-                    'status'     => 'canceled',
-                    'expires_at' => Carbon::now(),
-                ]);
-
-            // 4) Prepare dates for the new subscription
+            // 3) Compute start + expiration dates
             $startsAt  = Carbon::now();
-            $expiresAt = match ($SubscriptionPlan->billing_cycle) {
+            $expiresAt = match ($plan->subscription_plan) {
                 'monthly' => $startsAt->clone()->addMonth(),
                 'yearly' => $startsAt->clone()->addYear(),
-                'lifetime' => null,
-                default => null,
+                'free', // free plan: never expires
+                'lifetime' // lifetime plan: never expires
+                => null,
             };
 
-            // 5) Create the new subscription
-            $subscription = UserSubscription::create([
-                'user_id'    => $user->id,
-                'plan_id'    => $SubscriptionPlan->id,
-                'starts_at'  => $startsAt,
-                'expires_at' => $expiresAt,
-                'status'     => 'active',
-            ]);
+            // 4) Create or update the single subscription row for this user
+            $subscription = UserSubscription::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'plan_id'    => $plan->id,
+                    'starts_at'  => $startsAt,
+                    'expires_at' => $expiresAt,
+                    'status'     => 'active',
+                ]
+            );
 
-            // 6) Return success with both subscription + plan info
+            // 5) Determine HTTP status & message
+            $statusCode = $subscription->wasRecentlyCreated ? 201 : 200;
+            $message    = $subscription->wasRecentlyCreated
+            ? 'Subscription plan added successfully.'
+            : 'Subscription plan updated successfully.';
+
+            // 6) Return payload
             return Helper::jsonResponse(
                 true,
-                'Subscription plan added successfully.',
-                201,
+                $message,
+                $statusCode,
                 [
                     'subscription' => [
                         'id'         => $subscription->id,
@@ -82,11 +90,15 @@ class SubscriptionController extends Controller {
                         'expires_at' => $subscription->expires_at?->toIso8601String(),
                         'status'     => $subscription->status,
                     ],
-                    'plan'         => new SubscriptionPlanResource($SubscriptionPlan),
+                    'plan'         => new SubscriptionPlanResource($plan),
                 ]
             );
         } catch (Exception $e) {
-            return Helper::jsonResponse(false, 'An error occurred while choosing the plan.', 500, null,
+            return Helper::jsonResponse(
+                false,
+                'An error occurred while choosing the plan.',
+                500,
+                null,
                 ['exception' => $e->getMessage()]
             );
         }

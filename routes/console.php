@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\ExpireSubscriptions;
 use App\Console\Commands\MakeInterface;
 use App\Console\Commands\MakeService;
 use Illuminate\Foundation\Inspiring;
@@ -9,12 +10,14 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
 
-//# registering make service class command
+// registering make service class command
 Artisan::command('make:service {name}', function ($name) {
     $this->call(MakeService::class, ['name' => $name]);
 });
 
-//~ registering make interface class command
+// registering make interface class command
 Artisan::command('make:interface {name}', function ($name) {
     $this->call(MakeInterface::class, ['name' => $name]);
 });
+
+Schedule::command(ExpireSubscriptions::class)->daily();
