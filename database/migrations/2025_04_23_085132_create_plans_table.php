@@ -13,8 +13,7 @@ return new class extends Migration {
             $table->id();
 
             $table->enum('subscription_plan', ['free', 'monthly', 'yearly', 'lifetime']);
-            // $table->decimal('price', 8, 2);
-            $table->float('price', 8);
+            $table->decimal('price', 8, 2);
             $table->enum('billing_cycle', ['monthly', 'yearly', 'lifetime']);
             $table->integer('touch_points')->nullable()->default(null);
             $table->boolean('has_ads');
