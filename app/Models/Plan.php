@@ -27,7 +27,7 @@ class Plan extends Model {
     protected $casts = [
         'id'                => 'integer',
         'subscription_plan' => 'string',
-        'price'             => 'float',
+        'price'             => 'decimal:2',
         'billing_cycle'     => 'string',
         'touch_points'      => 'integer',
         'has_ads'           => 'boolean',
@@ -37,6 +37,10 @@ class Plan extends Model {
         'updated_at'        => 'datetime',
         'deleted_at'        => 'datetime',
     ];
+
+    public function getPriceAttribute($value) {
+        return number_format($value, 2, '.', '');
+    }
 
     public function getTouchPointsLabelAttribute(): string {
         return $this->touch_points === null ? 'Unlimited' : (string) $this->touch_points;
