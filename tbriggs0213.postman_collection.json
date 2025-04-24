@@ -60,7 +60,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"provider\": \"google\",\r\n\t\"token\": \"ya29.a0AZYkNZhdjPflBTZfPp-ZY64TZQrSo35LtzGRKHeeflAFp0hnYXNNO2lCSKreaCZ9ovyJ2no0_B4RVAff08R377RCKop-0jxwPcO1Jo8_1ywzG2kTNGoYSLUB9iWXi7qn8X0331suYGQdmX8EwUJsNmbJOtfEAyvx8t0qGjErdgaCgYKAeUSARISFQHGX2MiA9bgkjzOs__jc4Ve14STgw0177\"\r\n}"
+							"raw": "{\r\n\t\"provider\": \"google\",\r\n\t\"token\": \"ya29.a0AZYkNZif4ITG36feAFKoIpOSoM6kY-NC8T8seVRPvq8qB_2Eukq1bQ1JqLPaI_65IeR2ZZAKYexMF0RICTUtDT-iK1qc9CCict8YvcOMw_-5vpAQ4Nsq809aHyjmLtxrjaRevqlV-IRuQxCkIu2ZJQPDu1ywOf5t47VNiyutxQaCgYKAcwSARISFQHGX2Milx-I6i3bgmWKEwrTK2JrNQ0177\"\r\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/auth/socialite-login",
@@ -237,7 +237,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"plan_id\": 2\r\n}",
+							"raw": "{\r\n  \"plan_id\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -252,6 +252,116 @@
 							"path": [
 								"subscription",
 								"choose"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Touch_Point",
+			"item": [
+				{
+					"name": "Create_Touch_Points",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatar",
+									"description": "Nullable",
+									"type": "file",
+									"src": "/C:/Users/HP/Documents/service-image.jpg",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "Jane Doe",
+									"description": "Required",
+									"type": "text"
+								},
+								{
+									"key": "phone_number",
+									"value": "+123456789",
+									"description": "Required",
+									"type": "text"
+								},
+								{
+									"key": "contact_type",
+									"value": "personal",
+									"description": "Accept only (personal or business)",
+									"type": "text"
+								},
+								{
+									"key": "contact_method",
+									"value": "call",
+									"description": "Accept only (call, text, meetup)",
+									"type": "text"
+								},
+								{
+									"key": "touch_point_start_date",
+									"value": "2025-04-30",
+									"description": "Date formate is Year-Month-Day. Example (2025-04-25). And must be Present or Future. Not Past.",
+									"type": "text"
+								},
+								{
+									"key": "touch_point_start_time",
+									"value": "21:25",
+									"description": "24-hour Formate like \"HH:MM\" Example (15:30). If Date is select today then time must be future. Past time not allowed.",
+									"type": "text"
+								},
+								{
+									"key": "frequency",
+									"value": "monthly",
+									"description": "Accept only (daily, weekly, monthly, custom)",
+									"type": "text"
+								},
+								{
+									"key": "custom_days",
+									"value": "65",
+									"description": "If user select frequency as 'custom' then only can pass this custom_days. Acceptable range is (0 - 365)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "notes",
+									"value": "Follow up in 20 days",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/touch-points/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"touch-points",
+								"create"
 							]
 						}
 					},
@@ -285,13 +395,13 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "http://127.0.0.1:8000/api",
-			"disabled": true
+			"value": "http://127.0.0.1:8000/api"
 		},
 		{
 			"key": "base_url",
 			"value": "http://172.16.40.3:8000/api",
-			"type": "string"
+			"type": "string",
+			"disabled": true
 		},
 		{
 			"key": "base_url",

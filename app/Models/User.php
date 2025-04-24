@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Models\Plan;
+use App\Models\TouchPoint;
 use App\Models\UserSubscription;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -74,5 +76,9 @@ class User extends Authenticatable implements JWTSubject {
             'id', // local key on users
             'plan_id' // local key on subscriptions
         )->where('user_subscriptions.status', 'active');
+    }
+
+    public function touchPoints(): HasMany {
+        return $this->hasMany(TouchPoint::class);
     }
 }
