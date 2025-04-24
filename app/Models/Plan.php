@@ -38,10 +38,6 @@ class Plan extends Model {
         'deleted_at'        => 'datetime',
     ];
 
-    public function getPriceAttribute($value) {
-        return number_format($value, 2, '.', '');
-    }
-
     public function getTouchPointsLabelAttribute(): string {
         return $this->touch_points === null ? 'Unlimited' : (string) $this->touch_points;
     }
