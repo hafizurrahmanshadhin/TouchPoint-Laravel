@@ -64,13 +64,17 @@ class SocialiteService {
 
         $isNewUser = $user->wasRecentlyCreated;
 
+        // Check if user has any active subscription
+        $isSubscribed = $user->activeSubscription()->exists();
+
         return [
-            'status'     => true,
-            'message'    => $isNewUser ? 'User registered successfully' : 'User logged in successfully',
-            'code'       => 200,
-            'token_type' => 'bearer',
-            'token'      => $jwtToken,
-            'data'       => [
+            'status'        => true,
+            'message'       => $isNewUser ? 'User registered successfully' : 'User logged in successfully',
+            'code'          => 200,
+            'token_type'    => 'bearer',
+            'token'         => $jwtToken,
+            'is_subscribed' => $isSubscribed,
+            'data'          => [
                 'id'     => $user->id,
                 'name'   => $user->first_name . ' ' . $user->last_name,
                 'email'  => $user->email,

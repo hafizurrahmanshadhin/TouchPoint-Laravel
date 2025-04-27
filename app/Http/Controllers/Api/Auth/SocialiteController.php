@@ -37,12 +37,13 @@ class SocialiteController extends Controller {
             $response = $this->socialiteService->loginWithSocialite($provider, $token);
 
             return response()->json([
-                'status'     => true,
-                'message'    => $response['message'],
-                'code'       => $response['code'],
-                'token_type' => $response['token_type'],
-                'token'      => $response['token'],
-                'data'       => $response['data'],
+                'status'        => true,
+                'message'       => $response['message'],
+                'code'          => $response['code'],
+                'token_type'    => $response['token_type'],
+                'token'         => $response['token'],
+                'is_subscribed' => $response['is_subscribed'],
+                'data'          => $response['data'],
             ], $response['code']);
         } catch (UnauthorizedHttpException $e) {
             return $this->helper->jsonResponse(false, 'Unauthorized', 401, null, ['error' => $e->getMessage()]);
