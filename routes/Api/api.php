@@ -16,5 +16,7 @@ Route::middleware('auth.jwt')->group(function () {
     // TouchPoint routes
     Route::controller(TouchPointController::class)->group(function () {
         Route::post('/touch-points/create', 'createTouchPoint');
+        Route::get('/touch-points/summary/{id}', 'summaryTouchPoint');
+        Route::post('/touch-points/update/{id}', 'updateTouchPoint');
     });
 });
