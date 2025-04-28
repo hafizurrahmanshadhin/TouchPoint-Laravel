@@ -45,5 +45,7 @@ Route::middleware('auth.jwt')->group(function () {
         Route::get('/touch-points/completed', 'completedTouchPointsList');
         // This route is for upcoming touch points list
         Route::get('/touch-points/upcoming', 'upcomingTouchPointsList');
+        // This route is for showing the activity of touch points.
+        Route::get('/touch-points/activity', 'touchPointActivity');
     });
 });

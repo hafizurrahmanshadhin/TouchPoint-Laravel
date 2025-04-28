@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\Profile\CompletedTouchPointResource;
 use App\Http\Resources\Api\Profile\ProfileResource;
 use App\Http\Resources\Api\Profile\UpcomingTouchPointResource;
+use App\Models\TouchPoint;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -93,6 +95,116 @@ class ProfileController extends Controller {
             );
         } catch (Exception $e) {
             return Helper::jsonResponse(false, 'An error occurred while fetching upcoming touch points.', 500, null,
+                ['exception' => $e->getMessage()]
+            );
+        }
+    }
+
+    /**
+     * Return touch-point activity for the current week (Sun–Sat).
+     *
+     * Each day includes:
+     *   - day         (e.g. "Sun")
+     *   - date        ("YYYY-MM-DD")
+     *   - completed   (count where is_completed=true)
+     *   - incomplete  (count where is_completed=false)
+     *
+     * @param  Request  $request
+     * @return JsonResponse
+     */
+    public function touchPointActivity(Request $request): JsonResponse {
+        try {
+            $user = $request->user();
+
+            // Check if user has an active subscription
+            if (!$user->activeSubscription) {
+                return Helper::jsonResponse(false, 'You must take a subscription plan before viewing activity.', 403);
+            }
+
+            // Prepare today's date and start of the week (Sunday)
+            $today     = Carbon::today();
+            $weekStart = $today->copy()->startOfWeek(CarbonInterface::SUNDAY);
+
+            // Initialize an empty array to store week's activity
+            $activity = [];
+
+            //  Loop through 7 days (Sunday to Saturday)
+            for ($offset = 0; $offset < 7; $offset++) {
+                // Get each day by adding offset to week's start
+                $date = $weekStart->copy()->addDays($offset);
+
+                // Fetch touch points for that day for the user
+                $touchPoints = TouchPoint::where('user_id', $user->id)
+                    ->whereDate('touch_point_start_date', $date->toDateString())
+                    ->get();
+
+                // Calculate counts
+                $totalCount      = $touchPoints->count(); // total activities
+                $completedCount  = $touchPoints->where('is_completed', true)->count(); // completed activities
+                $incompleteCount = $totalCount - $completedCount; // incomplete activities
+
+                // Prepare segments based on the activity status
+                $segments = [];
+
+                if ($totalCount == 0) {
+                    // No touch points at all -> gray color
+                    $segments = [
+                        ['incomplete_count' => 0, 'color' => 'gray'],
+                    ];
+                } elseif ($date->isToday()) {
+                    // Today - Completed: white, Incomplete: blue
+                    if ($completedCount > 0) {
+                        $segments[] = ['completed_count' => $completedCount, 'color' => 'white'];
+                    }
+                    if ($incompleteCount > 0) {
+                        $segments[] = ['incomplete_count' => $incompleteCount, 'color' => 'blue'];
+                    }
+                } elseif ($date->isTomorrow()) {
+                    // Tomorrow's activities - yellow color
+                    if ($incompleteCount > 0) {
+                        $segments[] = ['incomplete_count' => $incompleteCount, 'color' => 'yellow'];
+                    }
+                } elseif ($date->gt($today->copy()->addDay())) {
+                    // Future days after tomorrow - green color
+                    if ($incompleteCount > 0) {
+                        $segments[] = ['incomplete_count' => $incompleteCount, 'color' => 'green'];
+                    }
+                } else {
+                    // Past days - Completed: white, Incomplete: red
+                    if ($completedCount > 0) {
+                        $segments[] = ['completed_count' => $completedCount, 'color' => 'white'];
+                    }
+                    if ($incompleteCount > 0) {
+                        $segments[] = ['incomplete_count' => $incompleteCount, 'color' => 'red'];
+                    }
+                }
+
+                // Push data for each day
+                $activity[] = [
+                    'day'        => $date->format('D'), // Day name (Sun, Mon, etc.)
+                    'date'       => $date->toDateString(), // Full date (2025-04-27)
+                    'total'      => $totalCount, // Total touchPoints
+                    'completed'  => $completedCount, // Completed touchPoints
+                    'incomplete' => $incompleteCount, // Incomplete touchPoints
+                    'segments'   => $segments, // Segmented color-wise counts
+                ];
+            }
+
+            // Prepare today's date and day separately for the response
+            $todayDate    = $today->format('m/d/Y');
+            $todayWeekDay = $today->format('D');
+
+            return response()->json([
+                'status'   => true,
+                'message'  => 'TouchPoint activity retrieved successfully.',
+                'code'     => 200,
+                'day'      => $todayDate, // Today's date
+                'week_day' => $todayWeekDay, // Today's week day
+                'data'     => $activity, // Weekly activity
+            ]);
+
+        } catch (Exception $e) {
+            return Helper::jsonResponse(false, 'An error occurred while fetching activity.', 500, null,
                 ['exception' => $e->getMessage()]
             );
         }
