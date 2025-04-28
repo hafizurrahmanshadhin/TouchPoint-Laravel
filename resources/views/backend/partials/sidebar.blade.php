@@ -7,22 +7,23 @@
     <div class="navbar-brand-box">
         <a href="{{ route('dashboard') }}" class="logo logo-dark">
             <span class="logo-sm">
-                <img src="{{ asset($systemSetting->logo ?? 'backend/images/logo-sm.png') }}" alt="Logo" height="22">
+                <img src="{{ asset($systemSetting->logo ?? 'frontend/logo.png') }}" alt="Logo"
+                    style="height:100px; width: 200px; margin-top: 10px; margin-bottom: 5px;">
             </span>
             <span class="logo-lg">
-                <img src="{{ asset($systemSetting->logo ?? 'backend/images/logo-light.png') }}" alt="Logo"
-                    height="22">
+                <img src="{{ asset($systemSetting->logo ?? 'frontend/logo.png') }}" alt="Logo"
+                    style="height:100px; width: 200px; margin-top: 10px; margin-bottom: 5px;">
             </span>
         </a>
 
         <a href="{{ route('dashboard') }}" class="logo logo-light">
             <span class="logo-sm">
-                <img src="{{ asset($systemSetting->logo ?? 'backend/images/logo-sm.png') }}" alt="Logo"
-                    height="22">
+                <img src="{{ asset($systemSetting->logo ?? 'frontend/logo.png') }}" alt="Logo"
+                    style="height:100px; width: 200px; margin-top: 10px; margin-bottom: 5px;">
             </span>
             <span class="logo-lg">
-                <img src="{{ asset($systemSetting->logo ?? 'backend/images/logo-light.png') }}" alt="Logo"
-                    height="22">
+                <img src="{{ asset($systemSetting->logo ?? 'frontend/logo.png') }}" alt="Logo"
+                    style="height:100px; width: 200px; margin-top: 10px; margin-bottom: 5px;">
             </span>
         </a>
 

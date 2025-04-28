@@ -1,6 +1,6 @@
 @extends('frontend.app')
 
-@section('title', 'Admin Dashboard Dosix')
+@section('title', 'Touch Point')
 
 @push('styles')
     <style>
@@ -17,7 +17,7 @@
         }
 
         body {
-            background-image: url('{{ asset('frontend/mockup_image.jpg') }}');
+            background-image: url('{{ asset('frontend/mockup_image.png') }}');
             background-size: cover;
             background-position: top center;
             background-repeat: no-repeat;
@@ -41,9 +41,9 @@
             padding: 0.8em 2em;
             font-size: 1.2em;
             color: white;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: #4990E2;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 40px;
             cursor: pointer;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
             transition: background-color 0.3s ease, transform 0.2s ease;
