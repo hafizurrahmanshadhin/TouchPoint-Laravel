@@ -14,6 +14,7 @@ class TouchPoint extends Model {
     use HasFactory, Notifiable, SoftDeletes, HasApiTokens;
     protected $fillable = [
         'user_id',
+        'is_completed',
         'avatar',
         'name',
         'phone_number',
@@ -29,6 +30,7 @@ class TouchPoint extends Model {
     protected $casts = [
         'id'                     => 'integer',
         'user_id'                => 'integer',
+        'is_completed'           => 'boolean',
         'avatar'                 => 'string',
         'name'                   => 'string',
         'phone_number'           => 'string',

@@ -14,6 +14,8 @@ return new class extends Migration {
 
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
+            $table->boolean('is_completed')->default(false);
+
             $table->string('avatar')->nullable();
             $table->string('name')->nullable(false);
             $table->string('phone_number')->nullable(false);

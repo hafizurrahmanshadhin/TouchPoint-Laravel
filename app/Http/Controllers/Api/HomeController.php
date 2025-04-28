@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\TouchPoint\ListTouchPointResource;
+use App\Http\Resources\Api\TouchPoint\ResetTouchPointResource;
+use App\Http\Resources\Api\TouchPoint\ShowSpecificTouchPointDetailsResource;
 use App\Models\TouchPoint;
 use Carbon\Carbon;
 use Exception;
@@ -15,85 +17,211 @@ class HomeController extends Controller {
     /**
      * Show the list of all touch points for the authenticated user.
      *
-     * @param Request $request
+     * Supports optional filtering by contact_type (personal or business),
+     * and sorts:
+     *   1) Overdue (red) tasks by days overdue ascending
+     *   2) Today   (blue)
+     *   3) Tomorrow(yellow)
+     *   4) Future  (green)
+     *
+     * @param  Request  $request
      * @return JsonResponse
      */
     public function listTouchPoints(Request $request): JsonResponse {
         try {
-            $user = $request->user();
+            $currentUser = $request->user();
 
-            // Check subscription
-            $subscription = $user->activeSubscription;
-            if (!$subscription) {
+            // 1) Ensure the user has an active subscription
+            if (!$currentUser->activeSubscription) {
                 return Helper::jsonResponse(false, 'You must take a subscription plan before viewing touch-points.', 403);
             }
 
-            // Get contact type from query for filtering
-            $contactType = $request->query('contact_type');
+            // 2) Optionally filter by contact type (personal/business)
+            $requestedContactType = $request->query('contact_type');
+            $touchPointsQuery     = TouchPoint::where('user_id', $currentUser->id);
 
-            // Build base query for this user
-            $query = TouchPoint::where('user_id', $user->id);
-
-            // If contact_type is "personal" or "business," apply filter
-            if (in_array($contactType, ['personal', 'business'])) {
-                $query->where('contact_type', $contactType);
+            if (in_array($requestedContactType, ['personal', 'business'], true)) {
+                $touchPointsQuery->where('contact_type', $requestedContactType);
             }
 
-            // Fetch and sort touch points
-            $touchPoints = $query->get()->sortBy(function ($touchPoint) {
-                $today     = Carbon::today();
-                $targetDay = $touchPoint->touch_point_start_date;
-                if ($targetDay->isPast() && !$targetDay->isToday()) {
-                    return 1; // red
-                } elseif ($targetDay->isToday()) {
-                    return 2; // blue
-                } elseif ($targetDay->isTomorrow()) {
-                    return 3; // yellow
+            // 3) Retrieve the filtered collection
+            $touchPointCollection = $touchPointsQuery->get();
+
+            // 4) Define today for date comparisons
+            $today = Carbon::today();
+
+            // 5) Sort the collection with a custom comparator:
+            //    - Primary: overdue (1), today (2), tomorrow (3), future (4)
+            //    - Secondary (only for overdue): days overdue ascending
+            $orderedTouchPoints = $touchPointCollection->sort(function ($first, $second) use ($today) {
+                // Determine the group priority for each touch point
+                $groupPriority = function (TouchPoint $touchPoint) use ($today) {
+                    $startDate = $touchPoint->touch_point_start_date;
+                    if ($startDate->isPast() && !$startDate->isToday()) {
+                        return 1; // Overdue
+                    }
+                    if ($startDate->isToday()) {
+                        return 2; // Today
+                    }
+                    if ($startDate->isTomorrow()) {
+                        return 3; // Tomorrow
+                    }
+                    return 4; // Future
+                };
+
+                $firstGroup  = $groupPriority($first);
+                $secondGroup = $groupPriority($second);
+
+                // Primary sort by group priority
+                if ($firstGroup !== $secondGroup) {
+                    return $firstGroup < $secondGroup ? -1 : 1;
                 }
-                return 4; // green
-            })->values();
 
-            // Retrieve current active plan
-            $activePlan = $user->activePlan;
-            $rawPlan    = $activePlan ? $activePlan->subscription_plan : null;
+                // Secondary sort for overdue group: days overdue ascending
+                if ($firstGroup === 1) {
+                    $daysOverdueFirst  = $first->touch_point_start_date->diffInDays($today);
+                    $daysOverdueSecond = $second->touch_point_start_date->diffInDays($today);
 
-            // Convert raw plan value to display label
-            switch ($rawPlan) {
-            case 'free':
-                $planLabel = 'Free Plan';
+                    if ($daysOverdueFirst !== $daysOverdueSecond) {
+                        return $daysOverdueFirst < $daysOverdueSecond ? -1 : 1;
+                    }
+                }
+
+                // Otherwise, preserve original order
+                return 0;
+            })->values(); // reindex the collection
+
+            // 6) Build user info and friendly plan label
+            $activePlan = $currentUser->activePlan;
+            $planKey    = $activePlan ? $activePlan->subscription_plan : null;
+            switch ($planKey) {
+            case 'free':$planLabel = 'Free Plan';
                 break;
-            case 'monthly':
-                $planLabel = 'Monthly Plan';
+            case 'monthly':$planLabel = 'Monthly Plan';
                 break;
-            case 'yearly':
-                $planLabel = 'Yearly Plan';
+            case 'yearly':$planLabel = 'Yearly Plan';
                 break;
-            case 'lifetime':
-                $planLabel = 'Lifetime Plan';
+            case 'lifetime':$planLabel = 'Lifetime Plan';
                 break;
-            default:
-                $planLabel = null;
+            default:$planLabel = null;
                 break;
             }
 
-            // Prepare user data
-            $userData = [
-                'id'                => $user->id,
-                'name'              => $user->first_name . ' ' . $user->last_name,
-                'avatar'            => $user->avatar ? asset($user->avatar) : null,
+            $userInfo = [
+                'id'                => $currentUser->id,
+                'name'              => "{$currentUser->first_name} {$currentUser->last_name}",
+                'avatar'            => $currentUser->avatar ? asset($currentUser->avatar) : null,
                 'subscription_plan' => $planLabel,
             ];
 
+            // 7) Return the structured JSON
             return response()->json([
                 'status'  => true,
                 'message' => 'Touch points list retrieved successfully.',
                 'code'    => 200,
-                'user'    => $userData,
-                'data'    => ListTouchPointResource::collection($touchPoints),
+                'user'    => $userInfo,
+                'data'    => ListTouchPointResource::collection($orderedTouchPoints),
             ], 200);
 
         } catch (Exception $e) {
-            return Helper::jsonResponse(false, 'An error occurred while fetching touch points.', 500, null, $e->getMessage());
+            return Helper::jsonResponse(false, 'An error occurred while fetching touch points.', 500, null,
+                ['exception' => $e->getMessage()]
+            );
+        }
+    }
+
+    /**
+     * Show details of a specific touch point including its history.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function showSpecificTouchPointDetails(Request $request, int $id): JsonResponse {
+        try {
+            $user = $request->user();
+
+            // Must have active subscription.
+            if (!$user->activeSubscription) {
+                return Helper::jsonResponse(false, 'You must take a subscription plan before viewing touch-point details', 403);
+            }
+
+            // Retrieve the touch point and ensure ownership
+            $touchPoint = TouchPoint::where('user_id', $user->id)->findOrFail($id);
+
+            // Build history for this touch-point only
+            $history = [];
+            if ($touchPoint->is_completed) {
+                $history[] = [
+                    'id'             => $touchPoint->id,
+                    'contact_method' => $touchPoint->contact_method,
+                    'day'            => $touchPoint->updated_at->diffForHumans(),
+                ];
+            }
+
+            return Helper::jsonResponse(true, 'Specific touch point details retrieved successfully.', 200,
+                [
+                    'touch_point' => new ShowSpecificTouchPointDetailsResource($touchPoint),
+                    'history'     => $history,
+                ]
+            );
+        } catch (Exception $e) {
+            return Helper::jsonResponse(false, 'An error occurred while retrieving the touch point.', 500, null,
+                ['exception' => $e->getMessage()]
+            );
+        }
+    }
+
+    /**
+     * Reset (Mark as Complete) a specific touch point.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function resetTouchPoint(Request $request, int $id): JsonResponse {
+        try {
+            $user = $request->user();
+
+            if (!$user->activeSubscription) {
+                return Helper::jsonResponse(false, 'You must have an active plan.', 403);
+            }
+
+            $tp = TouchPoint::where('user_id', $user->id)->findOrFail($id);
+
+            if (!$tp->is_completed) {
+                $tp->is_completed = true;
+                $tp->save();
+            }
+
+            $completedCount = TouchPoint::where('user_id', $user->id)->where('is_completed', true)->count();
+
+            $targetCount = 5;
+
+            if ($completedCount >= $targetCount) {
+                $newBadge = 'gold';
+            } elseif ($completedCount >= 3) {
+                $newBadge = 'silver';
+            } else {
+                $newBadge = 'bronze';
+            }
+
+            if ($user->badge !== $newBadge) {
+                $user->badge = $newBadge;
+                $user->save();
+            }
+
+            $payload = [
+                'badge'           => $user->badge,
+                'completed_count' => min($completedCount, $targetCount),
+                'target_count'    => $targetCount,
+            ];
+
+            return Helper::jsonResponse(true, 'Touch point marked complete; badge updated.', 200, new ResetTouchPointResource($payload));
+        } catch (Exception $e) {
+            return Helper::jsonResponse(false, 'An error occurred', 500, [
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 }

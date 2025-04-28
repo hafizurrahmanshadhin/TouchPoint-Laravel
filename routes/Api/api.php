@@ -22,10 +22,17 @@ Route::middleware('auth.jwt')->group(function () {
         Route::get('/touch-points/summary/{id}', 'summaryTouchPoint');
         // This route is for update a specific touch point.
         Route::post('/touch-points/update/{id}', 'updateTouchPoint');
+        // This route is for deleting a specific touch point.
+        Route::delete('/touch-points/delete/{id}', 'deleteTouchPoint');
     });
 
     // Home routes
     Route::controller(HomeController::class)->prefix('home')->group(function () {
+        // This route is for showing the list of all touch points.
         Route::get('/touch-points/list', 'listTouchPoints');
+        // Thi route is for showing a specific touch point details.
+        Route::get('/touch-points/show/details/{id}', 'showSpecificTouchPointDetails');
+        // This route is for Reset a specific touch point.
+        Route::post('/touch-points/reset/{id}', 'resetTouchPoint');
     });
 });

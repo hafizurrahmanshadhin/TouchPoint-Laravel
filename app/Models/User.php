@@ -37,6 +37,7 @@ class User extends Authenticatable implements JWTSubject {
             'cover_photo'       => 'string',
             'google_id'         => 'string',
             'apple_id'          => 'string',
+            'badge'             => 'string',
             'role'              => 'string',
             'status'            => 'string',
             'remember_token'    => 'string',

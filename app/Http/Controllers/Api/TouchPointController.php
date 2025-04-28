@@ -74,11 +74,18 @@ class TouchPointController extends Controller {
         }
     }
 
+    /**
+     * Show the summary of a specific touch point.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
     public function summaryTouchPoint(Request $request, int $id): JsonResponse {
         try {
             $user = $request->user();
 
-            // Must have active subscription (optional, if you want the same logic as create/update)
+            // Must have active subscription.
             $subscription = $user->activeSubscription;
             if (!$subscription) {
                 return Helper::jsonResponse(false, 'You must take a subscription plan before viewing touch-points.', 403);
@@ -158,6 +165,36 @@ class TouchPointController extends Controller {
             return Helper::jsonResponse(false, 'An error occurred while updating the touch point.', 500, null, [
                 'exception' => $e->getMessage(),
             ]);
+        }
+    }
+
+    /**
+     * Delete a specific touch point.
+     *
+     * @param  Request  $request
+     * @param  int  $id
+     * @return JsonResponse
+     */
+    public function deleteTouchPoint(Request $request, int $id): JsonResponse {
+        $user = $request->user();
+
+        // Must have an active subscription
+        if (!$user->activeSubscription) {
+            return Helper::jsonResponse(false, 'You must have an active plan before deleting touch-points.', 403);
+        }
+
+        // Find the touch point belonging to this user (authorization)
+        $touchPoint = TouchPoint::where('user_id', $user->id)->findOrFail($id);
+
+        try {
+            // Soft-delete the record
+            $touchPoint->delete();
+
+            return Helper::jsonResponse(true, 'Touch point deleted successfully.', 200);
+        } catch (Exception $e) {
+            return Helper::jsonResponse(false, 'An error occurred while deleting the touch point.', 500, null,
+                ['exception' => $e->getMessage()]
+            );
         }
     }
 }
