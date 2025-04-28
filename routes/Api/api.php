@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\TouchPointController;
 use Illuminate\Support\Facades\Route;
@@ -34,5 +35,15 @@ Route::middleware('auth.jwt')->group(function () {
         Route::get('/touch-points/show/details/{id}', 'showSpecificTouchPointDetails');
         // This route is for Reset a specific touch point.
         Route::post('/touch-points/reset/{id}', 'resetTouchPoint');
+    });
+
+    // Profile routes
+    Route::controller(ProfileController::class)->group(function () {
+        // This route is for retrieving the authenticated user’s profile.
+        Route::get('/profile', 'getProfile');
+        // This route is for the list of all completed touch points.
+        Route::get('/touch-points/completed', 'completedTouchPointsList');
+        // This route is for upcoming touch points list
+        Route::get('/touch-points/upcoming', 'upcomingTouchPointsList');
     });
 });
