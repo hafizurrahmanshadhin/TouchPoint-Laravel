@@ -1,4 +1,4 @@
-name: Deploy Private GitHub repository to cPanel
+name: Deploy project to our server
 on:
   push:
     branches:
@@ -17,3 +17,4 @@ jobs:
           server: 82.180.162.7
           username: touchpoint
           password: "rUKlsYiwhpCt5ZUeG5Wh"
+          timeout: 60
