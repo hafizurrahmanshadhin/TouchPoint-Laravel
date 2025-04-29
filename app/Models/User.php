@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\FirebaseToken;
 use App\Models\Plan;
 use App\Models\TouchPoint;
 use App\Models\UserSubscription;
@@ -81,5 +82,9 @@ class User extends Authenticatable implements JWTSubject {
 
     public function touchPoints(): HasMany {
         return $this->hasMany(TouchPoint::class);
+    }
+
+    public function firebaseTokens(): HasMany {
+        return $this->hasMany(FirebaseToken::class);
     }
 }

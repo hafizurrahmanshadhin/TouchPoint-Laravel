@@ -9,6 +9,7 @@ use App\Http\Requests\Api\TouchPoint\UpdateTouchPointRequest;
 use App\Http\Resources\Api\TouchPoint\SummaryTouchPointResource;
 use App\Http\Resources\Api\TouchPoint\TouchPointResource;
 use App\Models\TouchPoint;
+use App\Notifications\TouchPointAdded;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -65,6 +66,8 @@ class TouchPointController extends Controller {
 
             $data['user_id'] = $user->id;
             $touchPoint      = TouchPoint::create($data);
+
+            $user->notify(new TouchPointAdded($touchPoint));
 
             return Helper::jsonResponse(true, 'Touch point created successfully.', 201, new TouchPointResource($touchPoint));
         } catch (Exception $e) {

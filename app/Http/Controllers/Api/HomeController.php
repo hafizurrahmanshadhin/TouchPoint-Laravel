@@ -8,6 +8,7 @@ use App\Http\Resources\Api\TouchPoint\ListTouchPointResource;
 use App\Http\Resources\Api\TouchPoint\ResetTouchPointResource;
 use App\Http\Resources\Api\TouchPoint\ShowSpecificTouchPointDetailsResource;
 use App\Models\TouchPoint;
+use App\Notifications\BadgeEarned;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -209,6 +210,8 @@ class HomeController extends Controller {
             if ($user->badge !== $newBadge) {
                 $user->badge = $newBadge;
                 $user->save();
+
+                $user->notify(new BadgeEarned($newBadge));
             }
 
             $payload = [

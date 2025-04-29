@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types = 1);
 
 return [
     /*
@@ -9,7 +9,7 @@ return [
      * ------------------------------------------------------------------------
      */
 
-    'default' => env('FIREBASE_PROJECT', 'app'),
+    'default'  => env('FIREBASE_PROJECT', 'app'),
 
     /*
      * ------------------------------------------------------------------------
@@ -50,7 +50,8 @@ return [
              *
              */
 
-            'credentials' => env('FIREBASE_CREDENTIALS', env('GOOGLE_APPLICATION_CREDENTIALS')),
+            // 'credentials' => env('FIREBASE_CREDENTIALS', env('GOOGLE_APPLICATION_CREDENTIALS')),
+            'credentials'         => storage_path('app/tbriggs-1fb7a-firebase-adminsdk-fbsvc-d3bedb22ff.json'),
 
             /*
              * ------------------------------------------------------------------------
@@ -58,7 +59,7 @@ return [
              * ------------------------------------------------------------------------
              */
 
-            'auth' => [
+            'auth'                => [
                 'tenant_id' => env('FIREBASE_AUTH_TENANT_ID'),
             ],
 
@@ -68,7 +69,7 @@ return [
              * ------------------------------------------------------------------------
              */
 
-            'firestore' => [
+            'firestore'           => [
 
                 /*
                  * If you want to access a Firestore database other than the default database,
@@ -88,7 +89,7 @@ return [
              * ------------------------------------------------------------------------
              */
 
-            'database' => [
+            'database'            => [
 
                 /*
                  * In most of the cases the project ID defined in the credentials file
@@ -118,7 +119,7 @@ return [
 
             ],
 
-            'dynamic_links' => [
+            'dynamic_links'       => [
 
                 /*
                  * Dynamic links can be built with any URL prefix registered on
@@ -141,7 +142,7 @@ return [
              * ------------------------------------------------------------------------
              */
 
-            'storage' => [
+            'storage'             => [
 
                 /*
                  * Your project's default storage bucket usually uses the project ID
@@ -164,7 +165,7 @@ return [
              *
              */
 
-            'cache_store' => env('FIREBASE_CACHE_STORE', 'file'),
+            'cache_store'         => env('FIREBASE_CACHE_STORE', 'file'),
 
             /*
              * ------------------------------------------------------------------------
@@ -182,8 +183,8 @@ return [
              * two entries per request and response.
              */
 
-            'logging' => [
-                'http_log_channel' => env('FIREBASE_HTTP_LOG_CHANNEL'),
+            'logging'             => [
+                'http_log_channel'       => env('FIREBASE_HTTP_LOG_CHANNEL'),
                 'http_debug_log_channel' => env('FIREBASE_HTTP_DEBUG_LOG_CHANNEL'),
             ],
 
@@ -202,7 +203,7 @@ return [
                  * (default: none)
                  */
 
-                'proxy' => env('FIREBASE_HTTP_CLIENT_PROXY'),
+                'proxy'              => env('FIREBASE_HTTP_CLIENT_PROXY'),
 
                 /*
                  * Set the maximum amount of seconds (float) that can pass before
@@ -212,7 +213,7 @@ return [
                  * https://github.com/kreait/firebase-php/blob/6.x/src/Firebase/Http/HttpClientOptions.php
                  */
 
-                'timeout' => env('FIREBASE_HTTP_CLIENT_TIMEOUT'),
+                'timeout'            => env('FIREBASE_HTTP_CLIENT_TIMEOUT'),
 
                 'guzzle_middlewares' => [],
             ],

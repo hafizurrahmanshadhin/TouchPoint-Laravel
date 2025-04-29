@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\FirebaseTokenController;
 use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\TouchPointController;
@@ -48,4 +50,14 @@ Route::middleware('auth.jwt')->group(function () {
         // This route is for showing the activity of touch points.
         Route::get('/touch-points/activity', 'touchPointActivity');
     });
+
+    // Firebase Token Routes
+    Route::controller(FirebaseTokenController::class)->group(function () {
+        Route::post('/firebase/token/add', 'StoreFirebaseToken');
+        Route::post('/firebase/token/get', 'GetFirebaseToken');
+        Route::post('/firebase/token/delete', 'DeleteFirebaseToken');
+    });
+
+    // Notification routes
+    Route::get('/notifications', [NotificationController::class, 'index']);
 });
