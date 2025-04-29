@@ -25,6 +25,6 @@ Artisan::command('make:interface {name}', function ($name) {
 Schedule::command(ExpireSubscriptions::class)->daily();
 Schedule::command(SendDueTouchPointNotifications::class)->dailyAt('08:00');
 
-Schedule::call(function () {
-    logger()->info('test it');
-})->everySecond();
+// Schedule::call(function () {
+//     logger()->info('test it');
+// })->everySecond();
