@@ -59,8 +59,20 @@
 							}
 						],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\t\"provider\": \"google\",\r\n\t\"token\": \"ya29.a0AZYkNZif4ITG36feAFKoIpOSoM6kY-NC8T8seVRPvq8qB_2Eukq1bQ1JqLPaI_65IeR2ZZAKYexMF0RICTUtDT-iK1qc9CCict8YvcOMw_-5vpAQ4Nsq809aHyjmLtxrjaRevqlV-IRuQxCkIu2ZJQPDu1ywOf5t47VNiyutxQaCgYKAcwSARISFQHGX2Milx-I6i3bgmWKEwrTK2JrNQ0177\"\r\n}"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "provider",
+									"value": "google",
+									"description": "Accept only 'google' or 'apple'",
+									"type": "text"
+								},
+								{
+									"key": "token",
+									"value": "ya29.a0AZYkNZiiNF4S9SVOFBiAMe8Zlpm67QOUxNwVU4dpBS40izGQ0TilZ-NBKiCm9xBGI3N22_hF9OXqPptDjdf__Ft1YIQTqD6RKN7MH5Fe5p6oJaZFHWknCENDJJ_mtxQiF0bI1d-HwuZI_O-Fkt0rNxRiGh62rprp0olNhaqSkwaCgYKAbYSARISFQHGX2Mi8-9TNRasYkzaVEk6Hj6EgA0177",
+									"type": "text"
+								}
+							]
 						},
 						"url": {
 							"raw": "{{base_url}}/auth/socialite-login",
@@ -295,8 +307,7 @@
 									"key": "avatar",
 									"description": "Nullable",
 									"type": "file",
-									"src": "/C:/Users/HP/Documents/service-image.jpg",
-									"disabled": true
+									"src": "/C:/Users/HP/Documents/service-image.jpg"
 								},
 								{
 									"key": "name",
@@ -324,13 +335,13 @@
 								},
 								{
 									"key": "touch_point_start_date",
-									"value": "2025-04-30",
+									"value": "2025-05-30",
 									"description": "Date formate is Year-Month-Day. Example (2025-04-25). And must be Present or Future. Not Past.",
 									"type": "text"
 								},
 								{
 									"key": "touch_point_start_time",
-									"value": "21:25",
+									"value": "16:25",
 									"description": "24-hour Formate like \"HH:MM\" Example (15:30). If Date is select today then time must be future. Past time not allowed.",
 									"type": "text"
 								},
@@ -362,6 +373,693 @@
 							"path": [
 								"touch-points",
 								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Touch_Points_Summary",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/touch-points/summary/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"touch-points",
+								"summary",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update_Touch_Points",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatar",
+									"description": "Nullable",
+									"type": "file",
+									"src": "/C:/Users/HP/Pictures/Screenshots/Screenshot 2025-04-23 145830.png"
+								},
+								{
+									"key": "name",
+									"value": "updated name",
+									"description": "sometimes (if provided then validated)",
+									"type": "text"
+								},
+								{
+									"key": "phone_number",
+									"value": "00000000000",
+									"description": "sometimes (if provided then validated)",
+									"type": "text"
+								},
+								{
+									"key": "contact_type",
+									"value": "business",
+									"description": "Accept only (personal or business)",
+									"type": "text"
+								},
+								{
+									"key": "contact_method",
+									"value": "text",
+									"description": "Accept only (call, text, meetup)",
+									"type": "text"
+								},
+								{
+									"key": "touch_point_start_date",
+									"value": "2025-06-30",
+									"description": "Date formate is Year-Month-Day. Example (2025-04-25). And must be Present or Future. Not Past.",
+									"type": "text"
+								},
+								{
+									"key": "touch_point_start_time",
+									"value": "17:25",
+									"description": "24-hour Formate like \"HH:MM\" Example (15:30). If Date is select today then time must be future. Past time not allowed.",
+									"type": "text"
+								},
+								{
+									"key": "frequency",
+									"value": "custom",
+									"description": "Accept only (daily, weekly, monthly, custom)",
+									"type": "text"
+								},
+								{
+									"key": "custom_days",
+									"value": "10",
+									"description": "If user select frequency as 'custom' then only can pass this custom_days. Acceptable range is (0 - 365)",
+									"type": "text"
+								},
+								{
+									"key": "notes",
+									"value": "Updated Follow up in 10 days",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/touch-points/update/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"touch-points",
+								"update",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete_Touch_Points",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/touch-points/delete/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"touch-points",
+								"delete",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Home",
+			"item": [
+				{
+					"name": "List_Touch_Points",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/home/touch-points/list",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"home",
+								"touch-points",
+								"list"
+							],
+							"query": [
+								{
+									"key": "contact_type",
+									"value": "personal",
+									"disabled": true
+								},
+								{
+									"key": "contact_type",
+									"value": "business",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show_Touch_Point_Details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/home/touch-points/show/details/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"home",
+								"touch-points",
+								"show",
+								"details",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset_Touch_Point",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/home/touch-points/reset/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"home",
+								"touch-points",
+								"reset",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Profile",
+			"item": [
+				{
+					"name": "Get_Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Completed_Touch_Points",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/touch-points/completed",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"touch-points",
+								"completed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upcoming_Touch_Points",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/touch-points/upcoming",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"touch-points",
+								"upcoming"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Touch_Points_Activity",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/touch-points/activity",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"touch-points",
+								"activity"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Firebase",
+			"item": [
+				{
+					"name": "Add_Firebase_Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "token",
+									"value": "eNSsuIDuT_2oeXnNPbUqhX:APA91bE0g2l4lt_5xFSC3C_9HOgyor0u-5ukvIQOeZh_EYscHFAWDMdz5PGBMMwcbRe8A6volwfvMvnXFNwrg2XpsNy4ZRMvcvUcEU69iAoPlLDvrZcR4aU",
+									"type": "text"
+								},
+								{
+									"key": "device_id",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/firebase/token/add",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"firebase",
+								"token",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get_Firebase_Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "device_id",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/firebase/token/get",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"firebase",
+								"token",
+								"get"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete_Firebase_Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "device_id",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/firebase/token/delete",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"firebase",
+								"token",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notification",
+			"item": [
+				{
+					"name": "Get_All_The_Notifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/notifications",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications"
 							]
 						}
 					},
