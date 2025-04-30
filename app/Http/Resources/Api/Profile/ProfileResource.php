@@ -19,7 +19,7 @@ class ProfileResource extends JsonResource {
         $completedCount = $this->touchPoints()->where('is_completed', true)->count();
 
         // Count of upcoming touch points (start date > today)
-        $upcomingCount = $this->touchPoints()->where('touch_point_start_date', '>', $today)->count();
+        $upcomingCount = $this->touchPoints()->where('touch_point_start_date', '>', $today)->where('is_completed', false)->count();
 
         return [
             'id'                    => $this->id,
