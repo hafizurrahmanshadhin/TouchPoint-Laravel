@@ -1,4 +1,4 @@
-name: Deploy project to TouchPoint Client Server
+name: Deploy GitHub Repository to TouchPoint Server
 on:
   push:
     branches:

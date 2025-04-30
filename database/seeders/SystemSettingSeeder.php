@@ -14,7 +14,7 @@ class SystemSettingSeeder extends Seeder {
                 'system_name'    => 'Touchpnt',
                 'email'          => 'info@support.com',
                 'phone_number'   => '0123456789',
-                'address'        => 'Mohammadpur, Dhaka, Bangladesh',
+                'address'        => 'Dhaka, Bangladesh',
                 'copyright_text' => '©Touchpnt',
                 'description'    => '<p>About System...</p>',
                 'logo'           => null,

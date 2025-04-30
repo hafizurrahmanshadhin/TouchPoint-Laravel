@@ -1,4 +1,4 @@
-name: Deploy Private GitHub repository to cPanel Softvence
+name: Deploy GitHub Repository to Softvence Server
 on:
   push:
     branches:
