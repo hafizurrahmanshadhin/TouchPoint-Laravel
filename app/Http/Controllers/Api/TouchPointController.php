@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
+use Carbon\Carbon;
 use App\Helpers\Helper;
+use App\Models\TouchPoint;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Notifications\TouchPointAdded;
+use App\Http\Resources\Api\TouchPoint\TouchPointResource;
 use App\Http\Requests\Api\TouchPoint\CreateTouchPointRequest;
 use App\Http\Requests\Api\TouchPoint\UpdateTouchPointRequest;
 use App\Http\Resources\Api\TouchPoint\SummaryTouchPointResource;
-use App\Http\Resources\Api\TouchPoint\TouchPointResource;
-use App\Models\TouchPoint;
-use App\Notifications\TouchPointAdded;
-use Exception;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class TouchPointController extends Controller {
     /**
@@ -147,6 +148,9 @@ class TouchPointController extends Controller {
             // Assign user ID
             $data['user_id'] = $user->id;
             Log::info('Attempting to create touchPoint record with data:', $data);
+
+            $data['touch_point_start_date'] = Carbon::parse($data['touch_point_start_date'])->toDateString();
+
 
             $touchPoint = TouchPoint::create($data);
             Log::info('TouchPoint created successfully, ID: ' . $touchPoint->id);
