@@ -1,4 +1,4 @@
-name: Deploy GitHub Repository to TouchPoint Server
+name: Softvence
 on:
   push:
     branches:
@@ -14,6 +14,6 @@ jobs:
       - name: FTP-Deploy-Action
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
-          server: 82.180.162.7
-          username: touchpoint
-          password: "rUKlsYiwhpCt5ZUeG5Wh"
+          server: ftp.softvencefsd.xyz
+          username: tbriggs0213@tbriggs0213.softvencefsd.xyz
+          password: "softvencefsd_tbriggs0213"

@@ -701,6 +701,17 @@
 								"type": "text"
 							}
 						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "contact_method",
+									"value": "meetup",
+									"description": "Accept only (call, text, meetup)",
+									"type": "text"
+								}
+							]
+						},
 						"url": {
 							"raw": "{{base_url}}/home/touch-points/reset/1",
 							"host": [

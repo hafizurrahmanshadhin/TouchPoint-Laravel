@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class HomeController extends Controller {
     /**
@@ -182,6 +183,11 @@ class HomeController extends Controller {
      */
     public function resetTouchPoint(Request $request, int $id): JsonResponse {
         try {
+            // Validate the incoming 'contact_method'
+            $validated = $request->validate([
+                'contact_method' => ['required', Rule::in(['call', 'text', 'meetup'])],
+            ]);
+
             $user = $request->user();
 
             if (!$user->activeSubscription) {
@@ -190,10 +196,12 @@ class HomeController extends Controller {
 
             $tp = TouchPoint::where('user_id', $user->id)->findOrFail($id);
 
+            // Update the contact_method and mark as completed
+            $tp->contact_method = $validated['contact_method'];
             if (!$tp->is_completed) {
                 $tp->is_completed = true;
-                $tp->save();
             }
+            $tp->save();
 
             $completedCount = TouchPoint::where('user_id', $user->id)->where('is_completed', true)->count();
 
