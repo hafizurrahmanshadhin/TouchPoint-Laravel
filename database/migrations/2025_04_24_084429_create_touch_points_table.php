@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->enum('contact_method', ['call', 'text', 'meetup'])->nullable(false);
 
             $table->date('touch_point_start_date')->nullable(false);
-            $table->time('touch_point_start_time')->nullable(false);
+            $table->time('touch_point_start_time')->nullable();
 
             $table->enum('frequency', ['daily', 'weekly', 'monthly', 'custom'])->nullable(false);
             $table->unsignedInteger('custom_days')->nullable(); // Only used if frequency is 'custom'

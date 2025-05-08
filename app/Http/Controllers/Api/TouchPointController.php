@@ -50,14 +50,20 @@ class TouchPointController extends Controller {
             return Helper::jsonResponse(false, 'Invalid date format; please use YYYY-MM-DD.', 422);
         }
 
-        // Prevent duplicate date+time
-        $exists = TouchPoint::where('user_id', $user->id)
-            ->where('touch_point_start_date', $data['touch_point_start_date'])
-            ->where('touch_point_start_time', $data['touch_point_start_time'])
-            ->exists();
-        if ($exists) {
-            return Helper::jsonResponse(false, 'You already have a touch-point scheduled at that exact date and time.', 422);
+        // If the request doesn’t include time, store NULL
+        if (!$request->filled('touch_point_start_time')) {
+            $data['touch_point_start_time'] = null;
         }
+
+        // For now allow duplicate date+time
+        // Prevent duplicate date+time
+        // $exists = TouchPoint::where('user_id', $user->id)
+        //     ->where('touch_point_start_date', $data['touch_point_start_date'])
+        //     ->where('touch_point_start_time', $data['touch_point_start_time'])
+        //     ->exists();
+        // if ($exists) {
+        //     return Helper::jsonResponse(false, 'You already have a touch-point scheduled at that exact date and time.', 422);
+        // }
 
         try {
             // Handle avatar upload
