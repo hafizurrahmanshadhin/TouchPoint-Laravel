@@ -60,4 +60,3 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/login/google', [SocialiteController::class, 'GoogleRedirect'])->name('google-login');
 Route::get('/login/google/callback', [SocialiteController::class, 'GoogleCallback']);
-Route::get('/google-refresh-token', [SocialiteController::class, 'GoogleRefreshToken'])->name('google.refresh');

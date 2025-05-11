@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers\Web\Auth;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
-use GuzzleHttp\Client as GuzzleClient;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Session;
 use Laravel\Socialite\Facades\Socialite;
 
 class SocialiteController extends Controller {
+    /**
+     * Redirect the user to the Google authentication page.
+     *
+     * @return RedirectResponse
+     */
     public function GoogleRedirect(): RedirectResponse {
         return Socialite::driver('google')
             ->scopes(['openid', 'profile', 'email'])
@@ -19,36 +25,24 @@ class SocialiteController extends Controller {
             ->redirect();
     }
 
-    public function GoogleCallback(): RedirectResponse {
-        $user = Socialite::driver('google')->stateless()->user();
+    /**
+     * Obtain the user information from Google.
+     *
+     * @return JsonResponse
+     */
+    public function GoogleCallback(): JsonResponse {
+        try {
+            $user = Socialite::driver('google')->stateless()->user();
 
-        // Store the refresh token in session (no DB needed)
-        Session::put('google_refresh_token', $user->refreshToken);
-
-        dd([
-            'access_token'  => $user->token,
-            'refresh_token' => $user->refreshToken,
-            'expires_in'    => $user->expiresIn,
-        ]);
-    }
-
-    public function GoogleRefreshToken() {
-        $refreshToken = Session::get('google_refresh_token');
-        if (!$refreshToken) {
-            dd('No refresh token available in session.');
+            return Helper::jsonResponse(true, 'Token Retrieve Successfully', 200, [
+                'access_token'  => $user->token,
+                'refresh_token' => $user->refreshToken,
+                'expires_in'    => $user->expiresIn,
+            ]);
+        } catch (Exception $e) {
+            return Helper::jsonResponse(false, 'An error occurred', 500, [
+                'error' => $e->getMessage(),
+            ]);
         }
-
-        $client   = new GuzzleClient();
-        $response = $client->post('https://www.googleapis.com/oauth2/v4/token', [
-            'form_params' => [
-                'grant_type'    => 'refresh_token',
-                'refresh_token' => $refreshToken,
-                'client_id'     => config('services.google.client_id'),
-                'client_secret' => config('services.google.client_secret'),
-            ],
-        ]);
-
-        $tokenData = json_decode($response->getBody(), true);
-        dd($tokenData); // shows the new access token and expiry
     }
 }

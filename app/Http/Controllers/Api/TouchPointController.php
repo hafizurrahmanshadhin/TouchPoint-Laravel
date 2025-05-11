@@ -12,8 +12,10 @@ use App\Models\TouchPoint;
 use App\Notifications\TouchPointAdded;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TouchPointController extends Controller {
     /**
@@ -99,24 +101,64 @@ class TouchPointController extends Controller {
      * @param int $id
      * @return JsonResponse
      */
+    // public function summaryTouchPoint(Request $request, int $id): JsonResponse {
+    //     try {
+    //         $user = $request->user();
+
+    //         // Must have active subscription.
+    //         $subscription = $user->activeSubscription;
+    //         if (!$subscription) {
+    //             return Helper::jsonResponse(false, 'You must take a subscription plan before viewing touch-points.', 403);
+    //         }
+
+    //         // Retrieve the touch point and ensure ownership
+    //         $touchPoint = TouchPoint::where('user_id', $user->id)->findOrFail($id);
+
+    //         return Helper::jsonResponse(true, 'Touch point summary retrieved successfully.', 200, new SummaryTouchPointResource($touchPoint));
+    //     } catch (Exception $e) {
+    //         return Helper::jsonResponse(false, 'An error occurred while retrieving the touch point.', 500, null, [
+    //             'exception' => $e->getMessage(),
+    //         ]);
+    //     }
+    // }
+
     public function summaryTouchPoint(Request $request, int $id): JsonResponse {
+        Log::info('[summaryTouchPoint] invoked.', ['touch_point_id' => $id]);
+
+        $user = $request->user();
+        Log::info('[summaryTouchPoint] Authenticated user ID: ' . ($user?->id ?? 'none'));
+
+        // 1) Subscription check
+        $subscription = $user->activeSubscription;
+        if (!$subscription) {
+            Log::warning('[summaryTouchPoint] No active subscription for user ' . $user->id);
+            return Helper::jsonResponse(false, 'You must take a subscription plan before viewing touch-points.', 403);
+        }
+        Log::info('[summaryTouchPoint] Active subscription found for user ' . $user->id);
+
         try {
-            $user = $request->user();
-
-            // Must have active subscription.
-            $subscription = $user->activeSubscription;
-            if (!$subscription) {
-                return Helper::jsonResponse(false, 'You must take a subscription plan before viewing touch-points.', 403);
-            }
-
-            // Retrieve the touch point and ensure ownership
+            // 2) Fetch & authorize touch point
+            Log::info('[summaryTouchPoint] Attempting to load TouchPoint ' . $id);
             $touchPoint = TouchPoint::where('user_id', $user->id)->findOrFail($id);
+            Log::info('[summaryTouchPoint] TouchPoint loaded successfully.', ['touch_point' => $touchPoint->id]);
 
+            // 3) Return summary
             return Helper::jsonResponse(true, 'Touch point summary retrieved successfully.', 200, new SummaryTouchPointResource($touchPoint));
-        } catch (Exception $e) {
-            return Helper::jsonResponse(false, 'An error occurred while retrieving the touch point.', 500, null, [
-                'exception' => $e->getMessage(),
+        } catch (ModelNotFoundException $e) {
+            // 4) Not found or not owned by this user
+            Log::warning('[summaryTouchPoint] TouchPoint not found or not owned by user.', [
+                'user_id'        => $user->id,
+                'touch_point_id' => $id,
             ]);
+            return Helper::jsonResponse(false, 'Touch point not found.', 404);
+        } catch (Exception $e) {
+            // 5) Unexpected error
+            Log::error('[summaryTouchPoint] Unexpected error: ' . $e->getMessage(), [
+                'stack' => $e->getTraceAsString(),
+            ]);
+            return Helper::jsonResponse(false, 'An error occurred while retrieving the touch point.', 500, null,
+                ['exception' => $e->getMessage()]
+            );
         }
     }
 
