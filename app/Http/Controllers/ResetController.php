@@ -33,6 +33,11 @@ class ResetController extends Controller {
         }
     }
 
+    /**
+     * Optimize the system by caching routes and configurations
+     *
+     * @return JsonResponse
+     */
     public function Cache(): JsonResponse {
         try {
             Artisan::call('route:cache');

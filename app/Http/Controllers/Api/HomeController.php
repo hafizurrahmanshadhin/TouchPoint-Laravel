@@ -189,17 +189,43 @@ class HomeController extends Controller {
             ]);
 
             $user = $request->user();
-
             if (!$user->activeSubscription) {
                 return Helper::jsonResponse(false, 'You must have an active plan.', 403);
             }
 
             $tp = TouchPoint::where('user_id', $user->id)->findOrFail($id);
 
+            // If this point is past the deadline, reset score to 0; otherwise increment
+            $today = Carbon::today();
+            if ($tp->touch_point_start_date->lt($today)) {
+                $user->score = 0;
+            } else {
+                $user->score = ($user->score ?? 0) + 1;
+            }
+            $user->save();
+
             // Update the contact_method and mark as completed
             $tp->contact_method = $validated['contact_method'];
             if (!$tp->is_completed) {
                 $tp->is_completed = true;
+            }
+
+            // Bump start_date based on frequency
+            switch ($tp->frequency) {
+            case 'daily':
+                $tp->touch_point_start_date = $tp->touch_point_start_date->addDay();
+                break;
+            case 'weekly':
+                $tp->touch_point_start_date = $tp->touch_point_start_date->addWeek();
+                break;
+            case 'monthly':
+                $tp->touch_point_start_date = $tp->touch_point_start_date->addMonth();
+                break;
+            case 'custom':
+                if ($tp->custom_days) {
+                    $tp->touch_point_start_date = $tp->touch_point_start_date->addDays($tp->custom_days);
+                }
+                break;
             }
             $tp->save();
 
@@ -207,9 +233,18 @@ class HomeController extends Controller {
 
             $targetCount = 5;
 
-            if ($completedCount >= $targetCount) {
+            // if ($completedCount >= $targetCount) {
+            //     $newBadge = 'gold';
+            // } elseif ($completedCount >= 3) {
+            //     $newBadge = 'silver';
+            // } else {
+            //     $newBadge = 'bronze';
+            // }
+
+            // Update badge based on user->score
+            if ($user->score >= $targetCount) {
                 $newBadge = 'gold';
-            } elseif ($completedCount >= 3) {
+            } elseif ($user->score >= 3) {
                 $newBadge = 'silver';
             } else {
                 $newBadge = 'bronze';
