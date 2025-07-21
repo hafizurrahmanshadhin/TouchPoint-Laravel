@@ -69,7 +69,7 @@
 								},
 								{
 									"key": "token",
-									"value": "ya29.a0AW4Xtxgc1eJNSdeZVxKffyo6ad83lFNwD_jisN5TLLQZKEV-izFXYD-wjrJGYjTtFk0mHIDqVNoIqxyt8Tjt_JwUsXVhhGeTLceOR9oxS1r94jeI8YXkiZVXNeDrN6txTqdmX46tPAdg6y_uXn89qcbVgvMnN-uyEYED2BpXaCgYKAVMSARISFQHGX2MiEcAuGknwG-BoUz0SgIdyRQ0175",
+									"value": "ya29.a0AS3H6Nyj1Ow-X0FOEG1VbCO5S87XYXsecInNMGvC_BRpbKOekKoYu4vOy9A9U1dnJFM37UR0NyFA2a0PuiVflBUB8nnoyv6JZu59a5GElJJIWeCTlsB0y6dJgsvIt5WcoSst4IdTXht0TBdP92wHeTXDtI_OxrJ7CNl5NHD2aCgYKAaESARUSFQHGX2MiFuPIjAOgdPCMT0rf9I-clA0175",
 									"type": "text"
 								},
 								{
@@ -350,15 +350,17 @@
 								},
 								{
 									"key": "touch_point_start_date",
-									"value": "2025-06-01",
-									"description": "Date formate is Year-Month-Day. Example (2025-04-25). And must be Present or Future. Not Past.",
-									"type": "text"
+									"value": "2025-07-21",
+									"description": "Date formate is Year-Month-Day. Example (2025-04-25). And must be Present or Future. Not Past. [Nullable; if set null then automatically set current date]",
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "touch_point_start_time",
 									"value": "23:25",
-									"description": "24-hour Formate like \"HH:MM\" Example (15:30). If Date is select today then time must be future. Past time not allowed. Here it can be Nullable.",
-									"type": "text"
+									"description": "24-hour Formate like \"HH:MM\" Example (15:30). If Date is select today then time must be future. Past time not allowed. Here it can be Nullable. [Nullable; if set null then automatically set current time]",
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "frequency",

@@ -42,6 +42,7 @@ class ListTouchPointResource extends JsonResource {
             'contact_method' => $this->contact_method,
             'color'          => $color,
             'dateline'       => $dateline,
+            'phone_number'   => $this->phone_number,
         ];
     }
 }

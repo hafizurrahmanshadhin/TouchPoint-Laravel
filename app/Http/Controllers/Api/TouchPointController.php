@@ -42,17 +42,21 @@ class TouchPointController extends Controller {
 
         $data = $request->validated();
 
-        // Normalize date[touch_point_start_date] into Y-m-d
-        try {
-            $normalized                     = Carbon::parse($data['touch_point_start_date'])->toDateString();
-            $data['touch_point_start_date'] = $normalized;
-        } catch (Exception $e) {
-            return Helper::jsonResponse(false, 'Invalid date format; please use YYYY-MM-DD.', 422);
+        // Set default date and time if not provided
+        if (!$request->filled('touch_point_start_date')) {
+            $data['touch_point_start_date'] = Carbon::now()->toDateString();
+        } else {
+            // Normalize date[touch_point_start_date] into Y-m-d if provided
+            try {
+                $normalized                     = Carbon::parse($data['touch_point_start_date'])->toDateString();
+                $data['touch_point_start_date'] = $normalized;
+            } catch (Exception $e) {
+                return Helper::jsonResponse(false, 'Invalid date format; please use YYYY-MM-DD.', 422);
+            }
         }
 
-        // If the request doesn’t include time, store NULL
         if (!$request->filled('touch_point_start_time')) {
-            $data['touch_point_start_time'] = null;
+            $data['touch_point_start_time'] = Carbon::now()->format('H:i');
         }
 
         try {

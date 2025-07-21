@@ -32,7 +32,7 @@ class CreateTouchPointRequest extends FormRequest {
             'phone_number'           => ['required', 'string', 'max:25'],
             'contact_type'           => ['required', Rule::in(['personal', 'business'])],
             'contact_method'         => ['required', Rule::in(['call', 'text', 'meetup'])],
-            'touch_point_start_date' => ['required', 'date'],
+            'touch_point_start_date' => ['nullable', 'date'],
             'touch_point_start_time' => ['nullable', 'date_format:H:i'],
             'frequency'              => ['required', Rule::in(['daily', 'weekly', 'monthly', 'custom'])],
             'custom_days'            => [
