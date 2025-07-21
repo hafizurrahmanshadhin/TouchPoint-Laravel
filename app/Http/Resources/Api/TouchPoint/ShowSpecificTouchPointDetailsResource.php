@@ -32,7 +32,7 @@ class ShowSpecificTouchPointDetailsResource extends JsonResource {
             $dateline  = "Due in {$daysAhead} day" . ($daysAhead > 1 ? 's' : '');
         }
 
-        return [
+        $response = [
             'id'             => $this->id,
             'avatar_url'     => $this->avatar ? asset($this->avatar) : asset('backend/images/default_images/user_1.jpg'),
             'name'           => $this->name,
@@ -43,5 +43,14 @@ class ShowSpecificTouchPointDetailsResource extends JsonResource {
             'color'          => $color,
             'dateline'       => $dateline,
         ];
+
+        // Add custom_days only if frequency is custom
+        if ($this->frequency === 'custom') {
+            $response['custom_days'] = $this->custom_days ?? 0;
+        } else {
+            $response['custom_days'] = null; // Ensure it's null for non-custom frequencies
+        }
+
+        return $response;
     }
 }
