@@ -8,6 +8,7 @@ use App\Http\Resources\Api\TouchPoint\ListTouchPointResource;
 use App\Http\Resources\Api\TouchPoint\ResetTouchPointResource;
 use App\Http\Resources\Api\TouchPoint\ShowSpecificTouchPointDetailsResource;
 use App\Models\TouchPoint;
+use App\Models\TouchPointHistory;
 use App\Notifications\BadgeEarned;
 use Carbon\Carbon;
 use Exception;
@@ -205,6 +206,9 @@ class HomeController extends Controller {
 
             $tp = TouchPoint::where('user_id', $user->id)->findOrFail($id);
 
+            // Store the original due date before updating
+            $originalDueDate = $tp->touch_point_start_date->copy();
+
             // If this point is past the deadline, reset score to 0; otherwise increment
             $today = Carbon::today();
             if ($tp->touch_point_start_date->lt($today)) {
@@ -213,6 +217,17 @@ class HomeController extends Controller {
                 $user->score = ($user->score ?? 0) + 1;
             }
             $user->save();
+
+            // Create history record
+            TouchPointHistory::create([
+                'user_id'           => $user->id,
+                'touch_point_id'    => $tp->id,
+                'name'              => $tp->name,
+                'contact_method'    => $validated['contact_method'],
+                'completed_date'    => $today,
+                'original_due_date' => $originalDueDate,
+                'completed_at'      => now(),
+            ]);
 
             // Update the contact_method and mark as completed
             $tp->contact_method = $validated['contact_method'];
@@ -242,14 +257,6 @@ class HomeController extends Controller {
             $completedCount = TouchPoint::where('user_id', $user->id)->where('is_completed', true)->count();
 
             $targetCount = 5;
-
-            // if ($completedCount >= $targetCount) {
-            //     $newBadge = 'gold';
-            // } elseif ($completedCount >= 3) {
-            //     $newBadge = 'silver';
-            // } else {
-            //     $newBadge = 'bronze';
-            // }
 
             // Update badge based on user->score
             if ($user->score >= $targetCount) {

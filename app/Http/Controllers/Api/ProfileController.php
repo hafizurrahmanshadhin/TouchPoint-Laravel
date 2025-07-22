@@ -8,6 +8,7 @@ use App\Http\Resources\Api\Profile\CompletedTouchPointResource;
 use App\Http\Resources\Api\Profile\ProfileResource;
 use App\Http\Resources\Api\Profile\UpcomingTouchPointResource;
 use App\Models\TouchPoint;
+use App\Models\TouchPointHistory;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Exception;
@@ -133,15 +134,25 @@ class ProfileController extends Controller {
                 // Get each day by adding offset to week's start
                 $date = $weekStart->copy()->addDays($offset);
 
-                // Fetch touch points for that day for the user
-                $touchPoints = TouchPoint::where('user_id', $user->id)
+                // Fetch current touch points for that day
+                $currentTouchPoints = TouchPoint::where('user_id', $user->id)
                     ->whereDate('touch_point_start_date', $date->toDateString())
                     ->get();
 
+                // Fetch completed touch points from history for that day
+                $completedHistoryCount = TouchPointHistory::where('user_id', $user->id)
+                    ->whereDate('completed_date', $date->toDateString())
+                    ->count();
+
                 // Calculate counts
-                $totalCount      = $touchPoints->count(); // total activities
-                $completedCount  = $touchPoints->where('is_completed', true)->count(); // completed activities
-                $incompleteCount = $totalCount - $completedCount; // incomplete activities
+                $currentTotalCount      = $currentTouchPoints->count();
+                $currentCompletedCount  = $currentTouchPoints->where('is_completed', true)->count();
+                $currentIncompleteCount = $currentTotalCount - $currentCompletedCount;
+
+                // Total counts including history
+                $totalCount      = $currentTotalCount + $completedHistoryCount;
+                $completedCount  = $currentCompletedCount + $completedHistoryCount;
+                $incompleteCount = $currentIncompleteCount;
 
                 // Prepare segments based on the activity status
                 $segments = [];
@@ -149,44 +160,44 @@ class ProfileController extends Controller {
                 if ($totalCount == 0) {
                     // No touch points at all -> gray color
                     $segments = [
-                        ['incomplete_count' => 0, 'color' => 'gray'],
+                        ['count' => 0, 'color' => 'gray'],
                     ];
                 } elseif ($date->isToday()) {
                     // Today - Completed: white, Incomplete: blue
                     if ($completedCount > 0) {
-                        $segments[] = ['completed_count' => $completedCount, 'color' => 'white'];
+                        $segments[] = ['count' => $completedCount, 'color' => 'white'];
                     }
                     if ($incompleteCount > 0) {
-                        $segments[] = ['incomplete_count' => $incompleteCount, 'color' => 'blue'];
+                        $segments[] = ['count' => $incompleteCount, 'color' => 'blue'];
                     }
                 } elseif ($date->isTomorrow()) {
                     // Tomorrow's activities - yellow color
                     if ($incompleteCount > 0) {
-                        $segments[] = ['incomplete_count' => $incompleteCount, 'color' => 'yellow'];
+                        $segments[] = ['count' => $incompleteCount, 'color' => 'yellow'];
                     }
                 } elseif ($date->gt($today->copy()->addDay())) {
                     // Future days after tomorrow - green color
                     if ($incompleteCount > 0) {
-                        $segments[] = ['incomplete_count' => $incompleteCount, 'color' => 'green'];
+                        $segments[] = ['count' => $incompleteCount, 'color' => 'green'];
                     }
                 } else {
                     // Past days - Completed: white, Incomplete: red
                     if ($completedCount > 0) {
-                        $segments[] = ['completed_count' => $completedCount, 'color' => 'white'];
+                        $segments[] = ['count' => $completedCount, 'color' => 'white'];
                     }
                     if ($incompleteCount > 0) {
-                        $segments[] = ['incomplete_count' => $incompleteCount, 'color' => 'red'];
+                        $segments[] = ['count' => $incompleteCount, 'color' => 'red'];
                     }
                 }
 
                 // Push data for each day
                 $activity[] = [
-                    'day'        => $date->format('D'), // Day name (Sun, Mon, etc.)
-                    'date'       => $date->toDateString(), // Full date (2025-04-27)
-                    'total'      => $totalCount, // Total touchPoints
-                    'completed'  => $completedCount, // Completed touchPoints
-                    'incomplete' => $incompleteCount, // Incomplete touchPoints
-                    'segments'   => $segments, // Segmented color-wise counts
+                    'day'        => $date->format('D'),
+                    'date'       => $date->toDateString(),
+                    'total'      => $totalCount,
+                    'completed'  => $completedCount,
+                    'incomplete' => $incompleteCount,
+                    'segments'   => $segments,
                 ];
             }
 
@@ -198,9 +209,9 @@ class ProfileController extends Controller {
                 'status'   => true,
                 'message'  => 'TouchPoint activity retrieved successfully.',
                 'code'     => 200,
-                'day'      => $todayDate, // Today's date
-                'week_day' => $todayWeekDay, // Today's week day
-                'data'     => $activity, // Weekly activity
+                'day'      => $todayDate,
+                'week_day' => $todayWeekDay,
+                'data'     => $activity,
             ]);
 
         } catch (Exception $e) {

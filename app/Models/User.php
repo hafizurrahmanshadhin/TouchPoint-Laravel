@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\FirebaseToken;
 use App\Models\Plan;
 use App\Models\TouchPoint;
+use App\Models\TouchPointHistory;
 use App\Models\UserSubscription;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -87,5 +88,9 @@ class User extends Authenticatable implements JWTSubject {
 
     public function firebaseTokens(): HasMany {
         return $this->hasMany(FirebaseToken::class);
+    }
+
+    public function touchPointHistories(): HasMany {
+        return $this->hasMany(TouchPointHistory::class);
     }
 }
