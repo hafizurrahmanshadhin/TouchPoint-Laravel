@@ -24,7 +24,7 @@ class HomeController extends Controller {
      *   1) Overdue (red) tasks by days overdue ascending
      *   2) Today   (blue)
      *   3) Tomorrow(yellow)
-     *   4) Future  (green)
+     *   4) Future  (green) by days ahead ascending
      *
      * @param  Request  $request
      * @return JsonResponse
@@ -54,7 +54,7 @@ class HomeController extends Controller {
 
             // 5) Sort the collection with a custom comparator:
             //    - Primary: overdue (1), today (2), tomorrow (3), future (4)
-            //    - Secondary (only for overdue): days overdue ascending
+            //    - Secondary: for overdue - days overdue ascending, for future - days ahead ascending
             $orderedTouchPoints = $touchPointCollection->sort(function ($first, $second) use ($today) {
                 // Determine the group priority for each touch point
                 $groupPriority = function (TouchPoint $touchPoint) use ($today) {
@@ -89,6 +89,16 @@ class HomeController extends Controller {
                     }
                 }
 
+                // Secondary sort for future group: days ahead ascending
+                if ($firstGroup === 4) {
+                    $daysAheadFirst  = $today->diffInDays($first->touch_point_start_date);
+                    $daysAheadSecond = $today->diffInDays($second->touch_point_start_date);
+
+                    if ($daysAheadFirst !== $daysAheadSecond) {
+                        return $daysAheadFirst < $daysAheadSecond ? -1 : 1;
+                    }
+                }
+
                 // Otherwise, preserve original order
                 return 0;
             })->values(); // reindex the collection
@@ -105,7 +115,7 @@ class HomeController extends Controller {
                 break;
             case 'lifetime':$planLabel = 'Lifetime Plan';
                 break;
-            default:$planLabel = null;
+            default: $planLabel = null;
                 break;
             }
 
