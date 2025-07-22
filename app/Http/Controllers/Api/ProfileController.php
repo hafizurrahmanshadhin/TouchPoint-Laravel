@@ -134,8 +134,8 @@ class ProfileController extends Controller {
                 // Get each day by adding offset to week's start
                 $date = $weekStart->copy()->addDays($offset);
 
-                // Fetch current touch points for that day
-                $currentTouchPoints = TouchPoint::where('user_id', $user->id)
+                // Fetch ONLY touch points that are actually scheduled for that specific day
+                $scheduledTouchPoints = TouchPoint::where('user_id', $user->id)
                     ->whereDate('touch_point_start_date', $date->toDateString())
                     ->get();
 
@@ -144,15 +144,32 @@ class ProfileController extends Controller {
                     ->whereDate('completed_date', $date->toDateString())
                     ->count();
 
-                // Calculate counts
-                $currentTotalCount      = $currentTouchPoints->count();
-                $currentCompletedCount  = $currentTouchPoints->where('is_completed', true)->count();
-                $currentIncompleteCount = $currentTotalCount - $currentCompletedCount;
+                // Calculate counts for scheduled touchpoints
+                $scheduledTotalCount = $scheduledTouchPoints->count();
 
-                // Total counts including history
-                $totalCount      = $currentTotalCount + $completedHistoryCount;
-                $completedCount  = $currentCompletedCount + $completedHistoryCount;
-                $incompleteCount = $currentIncompleteCount;
+                // For future dates, don't count touchpoints as "completed" even if is_completed = true
+                // because they haven't actually been completed yet on that future date
+                if ($date->isFuture()) {
+                    $scheduledCompletedCount  = 0; // Future touchpoints are never "completed" yet
+                    $scheduledIncompleteCount = $scheduledTotalCount; // All scheduled future touchpoints are incomplete
+                } else {
+                    // For past/today dates, use the actual completion status
+                    $scheduledCompletedCount  = $scheduledTouchPoints->where('is_completed', true)->count();
+                    $scheduledIncompleteCount = $scheduledTotalCount - $scheduledCompletedCount;
+                }
+
+                // Total counts including history (only for past dates and today)
+                if ($date->isFuture()) {
+                    // Future dates: only show scheduled touchpoints, no history
+                    $totalCount      = $scheduledTotalCount;
+                    $completedCount  = 0; // No completions for future dates
+                    $incompleteCount = $scheduledIncompleteCount;
+                } else {
+                    // Past/today dates: include both scheduled and historical
+                    $totalCount      = $scheduledTotalCount + $completedHistoryCount;
+                    $completedCount  = $scheduledCompletedCount + $completedHistoryCount;
+                    $incompleteCount = $scheduledIncompleteCount;
+                }
 
                 // Prepare segments based on the activity status
                 $segments = [];
@@ -171,12 +188,12 @@ class ProfileController extends Controller {
                         $segments[] = ['count' => $incompleteCount, 'color' => 'blue'];
                     }
                 } elseif ($date->isTomorrow()) {
-                    // Tomorrow's activities - yellow color
+                    // Tomorrow's activities - yellow color (only incomplete, since nothing can be completed in future)
                     if ($incompleteCount > 0) {
                         $segments[] = ['count' => $incompleteCount, 'color' => 'yellow'];
                     }
-                } elseif ($date->gt($today->copy()->addDay())) {
-                    // Future days after tomorrow - green color
+                } elseif ($date->isFuture()) {
+                    // Future days after tomorrow - green color (only incomplete)
                     if ($incompleteCount > 0) {
                         $segments[] = ['count' => $incompleteCount, 'color' => 'green'];
                     }
