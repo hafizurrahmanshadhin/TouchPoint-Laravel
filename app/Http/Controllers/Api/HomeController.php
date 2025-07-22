@@ -85,7 +85,7 @@ class HomeController extends Controller {
                     $daysOverdueSecond = $second->touch_point_start_date->diffInDays($today);
 
                     if ($daysOverdueFirst !== $daysOverdueSecond) {
-                        return $daysOverdueFirst < $daysOverdueSecond ? -1 : 1;
+                        return $daysOverdueFirst > $daysOverdueSecond ? -1 : 1;
                     }
                 }
 
