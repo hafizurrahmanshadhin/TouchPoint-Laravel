@@ -69,22 +69,8 @@
 								},
 								{
 									"key": "token",
-									"value": "ya29.a0AS3H6NxK5XyOwDDw_VfBMONNw2BOQarH-OGU1rOkOJxZuKTgXVYtZtR8zZm-yAWdpxsYdb4dSYkuiM6petg6tHSpCnAt4AboW1N5pIHYELwEJQ-g5wTXXMWcQ5X5DP2DAjEMB_3sPA6G3ThkTPiWTiWV9_beH6dkkkrmQhQGaCgYKAYQSARISFQHGX2MiwgsZ59U2SiLe58Y2-vWP_g0175",
+									"value": "ya29.a0AS3H6NwRQYt6GicmdTH-KdPg5H4yzl4adqotxLFBtMts2oAVCOM3dBzbLOOU2rq5mfQ38HPu2aZvQ5fFInlMZwRO0ed2AFTZ076sfQ3yXY8yAQLYigfzuXyetMwe3wC8h4HVEZ5uUBRie_lWIg0FBQjHUndds3czKyUPrCSsaCgYKAf8SARISFQHGX2MizYbL_ihyXZm6dXsueq2aHA0175",
 									"type": "text"
-								},
-								{
-									"key": "token",
-									"value": "ya29.a0AS3H6NxQTfpVi6Sq6fwLMvZ295TJF5E9tIQZh7V6mqcGmUjllwr_EY7Ef-CY_0hZf4NlhLMjKlslXNUwSUojn_TTlhyZVih0Zo2K3DvHcTb-iOtpwinZkk5KIAuRySE1rGeZdkxaS0NlJh67LTMFKIV-60LFegLVH39SnXmFtqbCkVZ0w_Xb60_m6geKogZc5X4IJHfO7drAt5sINRj2MC3MiD2rkbRBFqqgC6LKeGeVegaCgYKAfYSARQSFQHGX2MiGWn4szPPVT4lQqqvgg5ztw0245",
-									"description": "Token from Jahidul bhai",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "token",
-									"value": "ya29.a0AW4XtxiRK40C2pi9YjLn4Y1o4QQ72I81gx2BmJwfQ4QT8Lk6ZVOPz3v9dBgM2l3HyS-KRmV5M0nRZMh3MGg77EWXQT9OsJt0Z4yi0VxL2lX5SmP3jatb315ES_1W65j8EMqJzkJBG2E0-aWtUjfEcnT6k6zDBZXBCht7RO2sJFS8AOHUhL6vc_DNbWgsNygHE2Yt0nkdCJByjL4LP1kLxhTmMxNU-5xkIAmkBZyy64PGk6_ePIqa7YlgsIhHLTAaXlVEdQCG3ISj6GnR6Dwq7bqg9O3SbNU6cbFsLfgycjbapx2y9LUpPZ7OsMNar4WPsz3mKwaCgYKAacSARMSFQHGX2MiMkqNhQYA45fh9lz_1yO0Gg0333",
-									"description": "Token from Pranesh bhai",
-									"type": "text",
-									"disabled": true
 								}
 							]
 						},
